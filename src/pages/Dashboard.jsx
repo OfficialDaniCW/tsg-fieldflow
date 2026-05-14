@@ -40,10 +40,17 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* This month stats */}
+      {/* Stats — all jobs */}
       <div>
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">This Month</p>
-        <StatsRow jobs={thisMonthJobs} />
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">This Month</p>
+          {allJobs.filter(j => !j.job_date).length > 0 && (
+            <span className="text-xs text-amber-600 font-medium">
+              {allJobs.filter(j => !j.job_date).length} job{allJobs.filter(j => !j.job_date).length > 1 ? 's' : ''} missing a date
+            </span>
+          )}
+        </div>
+        <StatsRow jobs={thisMonthJobs} allJobsCount={allJobs.length} />
       </div>
 
       {/* Chart */}
