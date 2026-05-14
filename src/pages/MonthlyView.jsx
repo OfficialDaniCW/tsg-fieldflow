@@ -22,7 +22,7 @@ export default function MonthlyView() {
     return d >= startOfMonth(currentMonth) && d <= endOfMonth(currentMonth);
   });
 
-  const partsIssues = monthJobs.filter(j => ['parts_required', 'wrong_parts', 'parts_ordered'].includes(j.status));
+  const partsIssues = monthJobs.filter(j => ['parts_required', 'non_conformance', 'wrong_parts', 'parts_ordered'].includes(j.status));
   const overtimeJobs = monthJobs.filter(j => j.is_overtime);
 
   return (

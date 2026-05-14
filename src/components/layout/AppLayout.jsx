@@ -1,11 +1,12 @@
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Briefcase, BarChart3, MessageCircle, CalendarDays } from 'lucide-react';
+import { LayoutDashboard, Briefcase, BarChart3, MessageCircle, CalendarDays, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { path: '/', label: 'Home', icon: LayoutDashboard },
   { path: '/jobs', label: 'Jobs', icon: Briefcase },
   { path: '/calendar', label: 'Calendar', icon: CalendarDays },
+  { path: '/ftf', label: 'FTF', icon: TrendingUp },
   { path: '/monthly', label: 'Monthly', icon: BarChart3 },
   { path: '/whatsapp', label: 'WhatsApp', icon: MessageCircle },
 ];

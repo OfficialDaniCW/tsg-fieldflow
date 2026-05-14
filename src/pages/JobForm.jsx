@@ -16,8 +16,16 @@ import PartsManager from '@/components/jobs/PartsManager';
 const defaultJob = {
   job_number: '', location_name: '', location_number: '', job_date: '',
   start_time: '', finish_time: '', is_overtime: false, status: 'incomplete',
-  completion_notes: '', colleague_name: '', image_urls: [], parts: [], ai_extracted: false
+  completion_notes: '', colleague_name: '', image_urls: [], parts: [], ai_extracted: false,
+  non_conformance_reason: ''
 };
+
+const NC_REASONS = [
+  { value: 'wrong_parts_ordered', label: 'Wrong Parts Ordered' },
+  { value: 'wrong_diagnosis', label: 'Wrong Diagnosis' },
+  { value: 'third_party_required', label: '3rd Party Required' },
+  { value: 'weights_and_measures', label: 'Weights & Measures' },
+];
 
 function checkOvertime(finishTime) {
   if (!finishTime) return false;
@@ -135,12 +143,26 @@ export default function JobForm() {
                 <SelectItem value="incomplete">Incomplete</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
                 <SelectItem value="parts_required">Parts Required</SelectItem>
-                <SelectItem value="wrong_parts">Wrong Parts on Site</SelectItem>
+                <SelectItem value="non_conformance">Non-Conformance</SelectItem>
                 <SelectItem value="parts_ordered">Parts Ordered</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
+
+        {form.status === 'non_conformance' && (
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Non-Conformance Reason</Label>
+            <Select value={form.non_conformance_reason || ''} onValueChange={v => set('non_conformance_reason', v)}>
+              <SelectTrigger><SelectValue placeholder="Select reason..." /></SelectTrigger>
+              <SelectContent>
+                {NC_REASONS.map(r => (
+                  <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         <div className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
           <Switch checked={form.is_overtime} onCheckedChange={v => set('is_overtime', v)} id="overtime" />

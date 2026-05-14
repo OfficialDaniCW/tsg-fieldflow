@@ -38,11 +38,21 @@
         "incomplete",
         "completed",
         "parts_required",
-        "wrong_parts",
+        "non_conformance",
         "parts_ordered"
       ],
       "default": "incomplete",
       "description": "Current job status"
+    },
+    "non_conformance_reason": {
+      "type": "string",
+      "enum": [
+        "wrong_parts_ordered",
+        "wrong_diagnosis",
+        "third_party_required",
+        "weights_and_measures"
+      ],
+      "description": "Reason for non-conformance (why job could not be completed on first visit)"
     },
     "completion_notes": {
       "type": "string",

@@ -11,16 +11,17 @@ Deno.serve(async (req) => {
     }
 
     const messages = [];
-    const partsStatuses = ['parts_required', 'wrong_parts'];
+    const partsStatuses = ['parts_required', 'non_conformance', 'wrong_parts'];
 
     // --- Parts alert on status update ---
     if (event?.type === 'update') {
       const statusChanged = changed_fields?.includes('status');
       if (statusChanged && partsStatuses.includes(data.status) && old_data?.status !== data.status) {
-        const label = data.status === 'parts_required' ? '⚠️ Parts Required' : '❌ Wrong Parts on Site';
+        const label = data.status === 'parts_required' ? '⚠️ Parts Required' : '❌ Non-Conformance';
         const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
         const loc = data.location_name ? ` @ ${data.location_name}` : '';
-        messages.push(`🔧 *TSG Job Alert*\n\n${label}\n\n${jobRef}${loc}\n\nUpdate the job when parts are confirmed.`);
+        const ncReason = data.non_conformance_reason ? `\nReason: ${data.non_conformance_reason.replace(/_/g, ' ')}` : '';
+        messages.push(`🔧 *TSG Job Alert*\n\n${label}\n\n${jobRef}${loc}${ncReason}\n\nUpdate the job when resolved.`);
       }
 
       // --- Overtime alert: is_overtime newly turned true ---
@@ -36,10 +37,11 @@ Deno.serve(async (req) => {
     // --- New job created with parts issue or overtime ---
     if (event?.type === 'create') {
       if (partsStatuses.includes(data.status)) {
-        const label = data.status === 'parts_required' ? '⚠️ Parts Required' : '❌ Wrong Parts on Site';
+        const label = data.status === 'parts_required' ? '⚠️ Parts Required' : '❌ Non-Conformance';
         const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
         const loc = data.location_name ? ` @ ${data.location_name}` : '';
-        messages.push(`🔧 *TSG Job Alert*\n\n${label}\n\n${jobRef}${loc}\n\nNew job created with a parts issue noted.`);
+        const ncReason = data.non_conformance_reason ? `\nReason: ${data.non_conformance_reason.replace(/_/g, ' ')}` : '';
+        messages.push(`🔧 *TSG Job Alert*\n\n${label}\n\n${jobRef}${loc}${ncReason}\n\nNew job created with a non-conformance noted.`);
       }
       if (data.is_overtime === true) {
         const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';

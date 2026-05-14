@@ -24,7 +24,7 @@ export default function Dashboard() {
   });
 
   const incomplete = allJobs.filter(j => j.status === 'incomplete').slice(0, 5);
-  const partsIssues = allJobs.filter(j => ['parts_required', 'wrong_parts'].includes(j.status)).slice(0, 5);
+  const partsIssues = allJobs.filter(j => ['parts_required', 'non_conformance', 'wrong_parts'].includes(j.status)).slice(0, 5);
   const recentJobs = allJobs.slice(0, 5);
 
   return (
