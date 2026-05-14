@@ -4,7 +4,7 @@ export default function StatsRow({ jobs }) {
   const total = jobs.length;
   const completed = jobs.filter(j => j.status === 'completed').length;
   const incomplete = jobs.filter(j => j.status === 'incomplete').length;
-  const partsIssues = jobs.filter(j => ['parts_required', 'wrong_parts', 'parts_ordered'].includes(j.status)).length;
+  const partsIssues = jobs.filter(j => ['parts_required', 'wrong_parts', 'parts_ordered', 'non_conformance'].includes(j.status)).length;
   const overtime = jobs.filter(j => j.is_overtime).length;
 
   const stats = [

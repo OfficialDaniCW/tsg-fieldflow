@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, startOfMonth, endOfMonth, parseISO, subMonths, addMonths } from 'date-fns';
+import { format, subMonths, addMonths } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatsRow from '@/components/dashboard/StatsRow';
@@ -13,14 +13,11 @@ export default function MonthlyView() {
 
   const { data: allJobs = [] } = useQuery({
     queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list('-job_date', 500),
+    queryFn: () => base44.entities.Job.list('-job_date', 1000),
   });
 
-  const monthJobs = allJobs.filter(job => {
-    if (!job.job_date) return false;
-    const d = parseISO(job.job_date);
-    return d >= startOfMonth(currentMonth) && d <= endOfMonth(currentMonth);
-  });
+  const monthStr = format(currentMonth, 'yyyy-MM');
+  const monthJobs = allJobs.filter(job => job.job_date?.startsWith(monthStr));
 
   const partsIssues = monthJobs.filter(j => ['parts_required', 'non_conformance', 'wrong_parts', 'parts_ordered'].includes(j.status));
   const overtimeJobs = monthJobs.filter(j => j.is_overtime);

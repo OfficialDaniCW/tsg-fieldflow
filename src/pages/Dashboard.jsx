@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { format, startOfMonth, endOfMonth } from 'date-fns';
+import { format } from 'date-fns';
 import { Plus, AlertTriangle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatsRow from '@/components/dashboard/StatsRow';
@@ -13,15 +13,12 @@ import StatusBadge from '@/components/jobs/StatusBadge';
 export default function Dashboard() {
   const { data: allJobs = [] } = useQuery({
     queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list('-job_date', 200),
+    queryFn: () => base44.entities.Job.list('-job_date', 1000),
   });
 
   const now = new Date();
-  const thisMonthJobs = allJobs.filter(j => {
-    if (!j.job_date) return false;
-    const d = new Date(j.job_date);
-    return d >= startOfMonth(now) && d <= endOfMonth(now);
-  });
+  const thisMonthStr = format(now, 'yyyy-MM');
+  const thisMonthJobs = allJobs.filter(j => j.job_date?.startsWith(thisMonthStr));
 
   const incomplete = allJobs.filter(j => j.status === 'incomplete').slice(0, 5);
   const partsIssues = allJobs.filter(j => ['parts_required', 'non_conformance', 'wrong_parts'].includes(j.status)).slice(0, 5);

@@ -14,7 +14,7 @@ export default function CalendarView() {
 
   const { data: jobs = [] } = useQuery({
     queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list('-job_date', 500),
+    queryFn: () => base44.entities.Job.list('-job_date', 1000),
   });
 
   const monthStart = startOfMonth(currentDate);

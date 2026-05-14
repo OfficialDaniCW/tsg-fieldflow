@@ -17,12 +17,12 @@ export default function AssetLibrary() {
 
   const { data: equipment = [], isLoading } = useQuery({
     queryKey: ['equipment'],
-    queryFn: () => base44.entities.Equipment.list('location_name', 500),
+    queryFn: () => base44.entities.Equipment.list('location_name', 1000),
   });
 
   const { data: jobs = [] } = useQuery({
     queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list('-job_date', 500),
+    queryFn: () => base44.entities.Job.list('-job_date', 1000),
   });
 
   // Count jobs per equipment_name — case-insensitive normalised key

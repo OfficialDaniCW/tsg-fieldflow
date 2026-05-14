@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, startOfMonth, endOfMonth, parseISO, subMonths, addMonths } from 'date-fns';
+import { format, parseISO, subMonths, addMonths } from 'date-fns';
 import { ChevronLeft, ChevronRight, TrendingUp, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -19,14 +19,11 @@ export default function FTFReport() {
 
   const { data: allJobs = [] } = useQuery({
     queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list('-job_date', 500),
+    queryFn: () => base44.entities.Job.list('-job_date', 1000),
   });
 
-  const monthJobs = allJobs.filter(job => {
-    if (!job.job_date) return false;
-    const d = parseISO(job.job_date);
-    return d >= startOfMonth(currentMonth) && d <= endOfMonth(currentMonth);
-  });
+  const monthStr = format(currentMonth, 'yyyy-MM');
+  const monthJobs = allJobs.filter(job => job.job_date?.startsWith(monthStr));
 
   const completed = monthJobs.filter(j => j.status === 'completed');
   const nonConformance = monthJobs.filter(j => j.status === 'non_conformance' || j.status === 'wrong_parts');
