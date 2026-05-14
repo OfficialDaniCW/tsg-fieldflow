@@ -34,6 +34,18 @@ Deno.serve(async (req) => {
       }
     }
 
+    // --- New job created: always send a confirmation ---
+    if (event?.type === 'create') {
+      const jobRef = data.job_number ? `#${data.job_number}` : 'New job';
+      const loc = data.location_name ? ` @ ${data.location_name}` : '';
+      const typeLabel = { reactive: '🔧 Reactive', ppm: '📋 PPM', vr2: '💨 VR2', other: '📁 Other' }[data.job_type] || '';
+      const pump = data.pump_number ? `\nPump: ${data.pump_number}` : '';
+      const equip = data.equipment_name ? `\nEquipment: ${data.equipment_name}` : '';
+      const times = (data.start_time || data.finish_time) ? `\nTime: ${data.start_time || '?'} → ${data.finish_time || '?'}` : '';
+      const colleague = data.colleague_name ? `\nWith: ${data.colleague_name}` : '';
+      messages.push(`✅ *Job added to list!*\n\n${typeLabel ? typeLabel + ' — ' : ''}Job ${jobRef}${loc}${pump}${equip}${times}${colleague}`);
+    }
+
     // --- New job created with parts issue or overtime ---
     if (event?.type === 'create') {
       if (partsStatuses.includes(data.status)) {
