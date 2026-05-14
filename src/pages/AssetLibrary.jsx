@@ -25,12 +25,13 @@ export default function AssetLibrary() {
     queryFn: () => base44.entities.Job.list('-job_date', 500),
   });
 
-  // Count jobs per equipment_name for quick stats
+  // Count jobs per equipment_name — case-insensitive normalised key
   const jobCountByEquipment = useMemo(() => {
     const map = {};
     jobs.forEach(j => {
       if (j.equipment_name) {
-        map[j.equipment_name] = (map[j.equipment_name] || 0) + 1;
+        const key = j.equipment_name.trim().toLowerCase();
+        map[key] = (map[key] || 0) + 1;
       }
     });
     return map;
@@ -44,15 +45,22 @@ export default function AssetLibrary() {
       eq.asset_number?.toLowerCase().includes(q);
   });
 
-  // Group by site
+  // Group by location_number (reliable unique site code), fall back to normalised name
   const bySite = useMemo(() => {
     const map = {};
     filtered.forEach(eq => {
-      const site = eq.location_name || 'Unknown Site';
-      if (!map[site]) map[site] = [];
-      map[site].push(eq);
+      // Use location_number as the grouping key so "Tesco Slough" and "tesco slough" merge
+      const key = eq.location_number?.trim() || eq.location_name?.trim().toLowerCase() || 'unknown';
+      if (!map[key]) map[key] = { label: eq.location_name || eq.location_number || 'Unknown Site', items: [] };
+      // Keep the most complete location name as label
+      if (eq.location_name && eq.location_name.length > map[key].label.length) {
+        map[key].label = eq.location_name;
+      }
+      map[key].items.push(eq);
     });
-    return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
+    return Object.entries(map)
+      .map(([key, { label, items }]) => ({ key, label, items }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [filtered]);
 
   return (
@@ -86,16 +94,16 @@ export default function AssetLibrary() {
         <div className="text-center py-10 text-muted-foreground text-sm">No results match your search.</div>
       ) : (
         <div className="space-y-6">
-          {bySite.map(([site, items]) => (
-            <div key={site}>
+          {bySite.map(({ key, label, items }) => (
+            <div key={key}>
               <div className="flex items-center gap-2 mb-2">
                 <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{site}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
                 <span className="text-xs text-muted-foreground">({items.length})</span>
               </div>
               <div className="space-y-2">
                 {items.map(eq => {
-                  const jobCount = jobCountByEquipment[eq.name] || 0;
+                  const jobCount = jobCountByEquipment[eq.name?.trim().toLowerCase()] || 0;
                   return (
                     <Link
                       key={eq.id}
