@@ -8,16 +8,19 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Wrench, Clock, CheckCircle2, AlertTriangle, Package, ShoppingCart } from 'lucide-react';
 import ImageUploader from '@/components/jobs/ImageUploader';
 import AIExtractButton from '@/components/jobs/AIExtractButton';
 import PartsManager from '@/components/jobs/PartsManager';
+import HistoryEntryManager from '@/components/jobs/HistoryEntryManager';
+import { cn } from '@/lib/utils';
 
 const defaultJob = {
   job_number: '', location_name: '', location_number: '', job_date: '',
   start_time: '', finish_time: '', is_overtime: false, status: 'incomplete',
-  completion_notes: '', colleague_name: '', image_urls: [], parts: [], ai_extracted: false,
-  non_conformance_reason: ''
+  job_type: 'reactive', pump_number: '', equipment_id: '', equipment_name: '',
+  completion_notes: '', colleague_name: '', image_urls: [], parts: [],
+  history_entries: [], ai_extracted: false, non_conformance_reason: ''
 };
 
 const NC_REASONS = [
@@ -25,6 +28,21 @@ const NC_REASONS = [
   { value: 'wrong_diagnosis', label: 'Wrong Diagnosis' },
   { value: 'third_party_required', label: '3rd Party Required' },
   { value: 'weights_and_measures', label: 'Weights & Measures' },
+];
+
+const JOB_TYPES = [
+  { value: 'reactive', label: '🔧 Reactive', desc: 'Breakdown / fault call' },
+  { value: 'ppm', label: '📋 PPM', desc: 'Planned maintenance audit' },
+  { value: 'vr2', label: '💨 VR2', desc: 'Vapour recovery' },
+  { value: 'other', label: '📁 Other', desc: '' },
+];
+
+const STATUS_OPTIONS = [
+  { value: 'incomplete', label: 'Incomplete', icon: Clock, color: 'border-red-300 bg-red-50 text-red-700' },
+  { value: 'completed', label: 'Completed', icon: CheckCircle2, color: 'border-green-300 bg-green-50 text-green-700' },
+  { value: 'parts_required', label: 'Parts Required', icon: Package, color: 'border-amber-300 bg-amber-50 text-amber-700' },
+  { value: 'non_conformance', label: 'Non-Conformance', icon: AlertTriangle, color: 'border-orange-300 bg-orange-50 text-orange-700' },
+  { value: 'parts_ordered', label: 'Parts Ordered', icon: ShoppingCart, color: 'border-blue-300 bg-blue-50 text-blue-700' },
 ];
 
 function checkOvertime(finishTime) {
@@ -48,8 +66,13 @@ export default function JobForm() {
     select: data => data[0],
   });
 
+  const { data: equipmentList = [] } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: () => base44.entities.Equipment.list('name', 100),
+  });
+
   useEffect(() => {
-    if (existing) setForm(existing);
+    if (existing) setForm({ ...defaultJob, ...existing });
   }, [existing]);
 
   const set = (field, value) => setForm(prev => {
@@ -57,6 +80,16 @@ export default function JobForm() {
     if (field === 'finish_time') updated.is_overtime = checkOvertime(value);
     return updated;
   });
+
+  const handleEquipmentSelect = (equipId) => {
+    if (equipId === '__none__') {
+      set('equipment_id', '');
+      setForm(prev => ({ ...prev, equipment_id: '', equipment_name: '' }));
+      return;
+    }
+    const eq = equipmentList.find(e => e.id === equipId);
+    setForm(prev => ({ ...prev, equipment_id: equipId, equipment_name: eq?.name || '' }));
+  };
 
   const handleExtracted = (data) => {
     setForm(prev => ({ ...prev, ...data }));
@@ -81,124 +114,210 @@ export default function JobForm() {
   });
 
   return (
-    <div className="p-5 md:p-8 max-w-2xl mx-auto space-y-8">
-      <div className="flex items-center gap-3">
+    <div className="pb-32 max-w-2xl mx-auto">
+      {/* Sticky header */}
+      <div className="sticky top-0 z-10 bg-background border-b border-border px-4 py-3 flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="font-grotesk text-xl font-bold">{isNew ? 'New Job' : 'Edit Job'}</h1>
+        <h1 className="font-grotesk text-lg font-bold flex-1">{isNew ? 'New Job' : 'Edit Job'}</h1>
+        <Button
+          className="gap-2 h-10 px-5 text-sm font-semibold"
+          onClick={() => saveMutation.mutate()}
+          disabled={!form.job_number || saveMutation.isPending}
+        >
+          <Save className="w-4 h-4" />
+          {saveMutation.isPending ? 'Saving...' : 'Save'}
+        </Button>
       </div>
 
-      {/* Image upload + AI extract */}
-      <section className="space-y-3">
-        <Label className="text-sm font-semibold">Job Sheet Images</Label>
-        <ImageUploader imageUrls={form.image_urls} onChange={v => set('image_urls', v)} />
-        {form.image_urls?.length > 0 && (
-          <AIExtractButton imageUrls={form.image_urls} onExtracted={handleExtracted} />
-        )}
-        {form.ai_extracted && (
-          <p className="text-xs text-primary bg-primary/10 rounded-lg px-3 py-2">
-            ✦ Data was auto-filled from your uploaded images. Please review and correct if needed.
-          </p>
-        )}
-      </section>
+      <div className="px-4 py-5 space-y-7">
 
-      {/* Core details */}
-      <section className="space-y-4">
-        <Label className="text-sm font-semibold">Job Details</Label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Job Type selector — big touch targets */}
+        <section>
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 block">Job Type</Label>
+          <div className="grid grid-cols-2 gap-2">
+            {JOB_TYPES.map(t => (
+              <button
+                key={t.value}
+                onClick={() => set('job_type', t.value)}
+                className={cn(
+                  'rounded-xl border-2 p-3 text-left transition-all',
+                  form.job_type === t.value
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-card'
+                )}
+              >
+                <p className="font-semibold text-sm">{t.label}</p>
+                {t.desc && <p className="text-xs text-muted-foreground mt-0.5">{t.desc}</p>}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Core details */}
+        <section className="space-y-4">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Job Details</Label>
+
           <div className="space-y-1.5">
             <Label htmlFor="job_number" className="text-xs text-muted-foreground">Job Number *</Label>
-            <Input id="job_number" value={form.job_number} onChange={e => set('job_number', e.target.value)} placeholder="e.g. TSG-12345" />
+            <Input id="job_number" value={form.job_number} onChange={e => set('job_number', e.target.value)} placeholder="e.g. TSG-12345" className="h-11 text-base" />
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="job_date" className="text-xs text-muted-foreground">Date</Label>
-            <Input id="job_date" type="date" value={form.job_date} onChange={e => set('job_date', e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="location_name" className="text-xs text-muted-foreground">Location Name</Label>
-            <Input id="location_name" value={form.location_name} onChange={e => set('location_name', e.target.value)} placeholder="Site name" />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="location_number" className="text-xs text-muted-foreground">Location Number</Label>
-            <Input id="location_number" value={form.location_number} onChange={e => set('location_number', e.target.value)} placeholder="Site code" />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="start_time" className="text-xs text-muted-foreground">Start Time</Label>
-            <Input id="start_time" type="time" value={form.start_time} onChange={e => set('start_time', e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="finish_time" className="text-xs text-muted-foreground">Finish Time</Label>
-            <Input id="finish_time" type="time" value={form.finish_time} onChange={e => set('finish_time', e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="colleague_name" className="text-xs text-muted-foreground">Colleague (if any)</Label>
-            <Input id="colleague_name" value={form.colleague_name} onChange={e => set('colleague_name', e.target.value)} placeholder="Name of colleague" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Status</Label>
-            <Select value={form.status} onValueChange={v => set('status', v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="incomplete">Incomplete</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="parts_required">Parts Required</SelectItem>
-                <SelectItem value="non_conformance">Non-Conformance</SelectItem>
-                <SelectItem value="parts_ordered">Parts Ordered</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
 
-        {form.status === 'non_conformance' && (
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Non-Conformance Reason</Label>
-            <Select value={form.non_conformance_reason || ''} onValueChange={v => set('non_conformance_reason', v)}>
-              <SelectTrigger><SelectValue placeholder="Select reason..." /></SelectTrigger>
-              <SelectContent>
-                {NC_REASONS.map(r => (
-                  <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="location_name" className="text-xs text-muted-foreground">Site Name</Label>
+              <Input id="location_name" value={form.location_name} onChange={e => set('location_name', e.target.value)} placeholder="Tesco Hythe" className="h-11" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="location_number" className="text-xs text-muted-foreground">Site Code</Label>
+              <Input id="location_number" value={form.location_number} onChange={e => set('location_number', e.target.value)} placeholder="148677" className="h-11" />
+            </div>
           </div>
-        )}
 
-        <div className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-          <Switch checked={form.is_overtime} onCheckedChange={v => set('is_overtime', v)} id="overtime" />
-          <Label htmlFor="overtime" className="text-sm font-medium text-purple-700 cursor-pointer">
-            Overtime (finished after 5:30pm)
-          </Label>
-          {form.is_overtime && <span className="ml-auto text-xs text-purple-600 font-medium">OT ACTIVE</span>}
-        </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="job_date" className="text-xs text-muted-foreground">Date</Label>
+              <Input id="job_date" type="date" value={form.job_date} onChange={e => set('job_date', e.target.value)} className="h-11" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="start_time" className="text-xs text-muted-foreground">Start</Label>
+              <Input id="start_time" type="time" value={form.start_time} onChange={e => set('start_time', e.target.value)} className="h-11" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="finish_time" className="text-xs text-muted-foreground">Finish</Label>
+              <Input id="finish_time" type="time" value={form.finish_time} onChange={e => set('finish_time', e.target.value)} className="h-11" />
+            </div>
+          </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="notes" className="text-xs text-muted-foreground">Notes</Label>
-          <Textarea id="notes" value={form.completion_notes} onChange={e => set('completion_notes', e.target.value)} placeholder="Any notes about this job..." className="resize-none h-24" />
-        </div>
-      </section>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="colleague_name" className="text-xs text-muted-foreground">Colleague</Label>
+              <Input id="colleague_name" value={form.colleague_name} onChange={e => set('colleague_name', e.target.value)} placeholder="Name" className="h-11" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pump_number" className="text-xs text-muted-foreground">Pump Number(s)</Label>
+              <Input id="pump_number" value={form.pump_number} onChange={e => set('pump_number', e.target.value)} placeholder="e.g. 9 & 10" className="h-11" />
+            </div>
+          </div>
 
-      {/* Parts */}
-      <section className="space-y-3">
-        <Label className="text-sm font-semibold">Parts</Label>
-        <PartsManager parts={form.parts || []} onChange={v => set('parts', v)} />
-      </section>
+          {/* Equipment selector */}
+          {equipmentList.length > 0 && (
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Equipment</Label>
+              <Select value={form.equipment_id || '__none__'} onValueChange={handleEquipmentSelect}>
+                <SelectTrigger className="h-11"><SelectValue placeholder="Select equipment..." /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">— None —</SelectItem>
+                  {equipmentList.map(eq => (
+                    <SelectItem key={eq.id} value={eq.id}>{eq.name}{eq.asset_number ? ` (${eq.asset_number})` : ''}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </section>
 
-      {/* Actions */}
-      <div className="flex items-center justify-between gap-3 pt-4 border-t border-border">
+        {/* Status — big tap targets */}
+        <section>
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 block">Status</Label>
+          <div className="grid grid-cols-1 gap-2">
+            {STATUS_OPTIONS.map(s => {
+              const Icon = s.icon;
+              return (
+                <button
+                  key={s.value}
+                  onClick={() => set('status', s.value)}
+                  className={cn(
+                    'flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-all',
+                    form.status === s.value ? s.color + ' border-current' : 'border-border bg-card'
+                  )}
+                >
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-semibold text-sm">{s.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {form.status === 'non_conformance' && (
+            <div className="mt-3 space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Non-Conformance Reason</Label>
+              <Select value={form.non_conformance_reason || ''} onValueChange={v => set('non_conformance_reason', v)}>
+                <SelectTrigger className="h-11"><SelectValue placeholder="Select reason..." /></SelectTrigger>
+                <SelectContent>
+                  {NC_REASONS.map(r => (
+                    <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <div className={cn(
+            'flex items-center gap-3 mt-3 p-3 rounded-xl border-2 transition-all',
+            form.is_overtime ? 'border-purple-300 bg-purple-50' : 'border-border bg-card'
+          )}>
+            <Switch checked={form.is_overtime} onCheckedChange={v => set('is_overtime', v)} id="overtime" />
+            <Label htmlFor="overtime" className="text-sm font-semibold cursor-pointer flex-1">
+              Overtime <span className="font-normal text-muted-foreground">(after 5:30pm)</span>
+            </Label>
+            {form.is_overtime && <span className="text-xs font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">OT</span>}
+          </div>
+        </section>
+
+        {/* Notes */}
+        <section className="space-y-1.5">
+          <Label htmlFor="notes" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Notes / What was done</Label>
+          <Textarea
+            id="notes"
+            value={form.completion_notes}
+            onChange={e => set('completion_notes', e.target.value)}
+            placeholder="Describe what was done, findings, outcome..."
+            className="resize-none h-28 text-base"
+          />
+        </section>
+
+        {/* Parts */}
+        <section className="space-y-3">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Parts</Label>
+          <PartsManager parts={form.parts || []} onChange={v => set('parts', v)} />
+        </section>
+
+        {/* History entries */}
+        <section className="space-y-3">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Previous Visit Notes</Label>
+          <p className="text-xs text-muted-foreground">Log notes from previous visits to help track what was done before.</p>
+          <HistoryEntryManager entries={form.history_entries || []} onChange={v => set('history_entries', v)} />
+        </section>
+
+        {/* Images */}
+        <section className="space-y-3">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Job Sheet Images</Label>
+          <ImageUploader imageUrls={form.image_urls} onChange={v => set('image_urls', v)} />
+          {form.image_urls?.length > 0 && (
+            <AIExtractButton imageUrls={form.image_urls} onExtracted={handleExtracted} />
+          )}
+          {form.ai_extracted && (
+            <p className="text-xs text-primary bg-primary/10 rounded-lg px-3 py-2">
+              ✦ Data was auto-filled from your uploaded images. Please review and correct if needed.
+            </p>
+          )}
+        </section>
+
+        {/* Delete */}
         {!isNew && (
-          <Button variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10 gap-2" onClick={() => deleteMutation.mutate()}>
-            <Trash2 className="w-4 h-4" />
-            Delete
-          </Button>
+          <div className="pt-4 border-t border-border">
+            <Button
+              variant="ghost"
+              className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 gap-2 h-11"
+              onClick={() => { if (confirm('Delete this job?')) deleteMutation.mutate(); }}
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete Job
+            </Button>
+          </div>
         )}
-        <div className="ml-auto flex gap-2">
-          <Button variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
-          <Button className="gap-2" onClick={() => saveMutation.mutate()} disabled={!form.job_number || saveMutation.isPending}>
-            <Save className="w-4 h-4" />
-            {saveMutation.isPending ? 'Saving...' : 'Save Job'}
-          </Button>
-        </div>
       </div>
     </div>
   );

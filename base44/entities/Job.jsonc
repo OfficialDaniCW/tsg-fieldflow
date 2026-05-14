@@ -6,6 +6,17 @@
       "type": "string",
       "description": "TSG job number"
     },
+    "job_type": {
+      "type": "string",
+      "enum": [
+        "reactive",
+        "ppm",
+        "vr2",
+        "other"
+      ],
+      "default": "reactive",
+      "description": "Type of job: Reactive (breakdown), PPM (planned maintenance audit), VR2 (vapour recovery)"
+    },
     "location_name": {
       "type": "string",
       "description": "Actual job location name"
@@ -13,6 +24,18 @@
     "location_number": {
       "type": "string",
       "description": "Location number/code"
+    },
+    "equipment_id": {
+      "type": "string",
+      "description": "Reference to Equipment entity"
+    },
+    "equipment_name": {
+      "type": "string",
+      "description": "Equipment name (denormalised for quick display)"
+    },
+    "pump_number": {
+      "type": "string",
+      "description": "Specific pump number(s) affected e.g. 9 & 10"
     },
     "job_date": {
       "type": "string",
@@ -52,11 +75,11 @@
         "third_party_required",
         "weights_and_measures"
       ],
-      "description": "Reason for non-conformance (why job could not be completed on first visit)"
+      "description": "Reason for non-conformance"
     },
     "completion_notes": {
       "type": "string",
-      "description": "Notes about job completion"
+      "description": "Notes about job completion / what was done"
     },
     "colleague_name": {
       "type": "string",
@@ -92,6 +115,33 @@
               "ordered",
               "wrong_part"
             ]
+          }
+        }
+      }
+    },
+    "history_entries": {
+      "type": "array",
+      "description": "Log of previous visits / comments for this job/site",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "engineer": {
+            "type": "string"
+          },
+          "equipment": {
+            "type": "string"
+          },
+          "pump_number": {
+            "type": "string"
+          },
+          "action_code": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "string"
           }
         }
       }
