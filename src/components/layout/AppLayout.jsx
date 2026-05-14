@@ -1,5 +1,5 @@
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Briefcase, MessageCircle, BarChart2, ChevronUp, LogOut } from 'lucide-react';
+import { LayoutDashboard, Briefcase, MessageCircle, BarChart2, ChevronUp, LogOut, Archive } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
@@ -9,6 +9,7 @@ const insightItems = [
   { path: '/calendar', label: 'Calendar' },
   { path: '/monthly', label: 'Monthly' },
   { path: '/ftf', label: 'FTF Report' },
+  { path: '/assets', label: 'Asset Library' },
 ];
 
 const mainNavItems = [
@@ -24,6 +25,7 @@ const allNavItems = [
   { path: '/calendar', label: 'Calendar', icon: BarChart2 },
   { path: '/monthly', label: 'Monthly', icon: BarChart2 },
   { path: '/ftf', label: 'FTF Report', icon: BarChart2 },
+  { path: '/assets', label: 'Asset Library', icon: Archive },
   { path: '/whatsapp', label: 'WhatsApp', icon: MessageCircle },
 ];
 
