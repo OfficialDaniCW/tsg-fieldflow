@@ -4,7 +4,6 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const payload = await req.json();
-
     const { event, data, old_data, changed_fields } = payload;
 
     if (!data) {
@@ -12,45 +11,41 @@ Deno.serve(async (req) => {
     }
 
     const messages = [];
-
     const partsStatuses = ['parts_required', 'wrong_parts'];
-    const statusChanged = changed_fields?.includes('status');
-    const newStatus = data.status;
-    const oldStatus = old_data?.status;
 
-    // Parts alert on status change (update events)
-    if (event?.type === 'update' && statusChanged && partsStatuses.includes(newStatus) && oldStatus !== newStatus) {
-      const statusLabel = newStatus === 'parts_required' ? '⚠️ Parts Required' : '❌ Wrong Parts on Site';
-      const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
-      const location = data.location_name ? ` @ ${data.location_name}` : '';
-      messages.push(`🔧 *TSG Job Alert*\n\n${statusLabel}\n\n${jobRef}${location}\n\nUpdate the job in your TSG Tracker app when parts are confirmed.`);
+    // --- Parts alert on status update ---
+    if (event?.type === 'update') {
+      const statusChanged = changed_fields?.includes('status');
+      if (statusChanged && partsStatuses.includes(data.status) && old_data?.status !== data.status) {
+        const label = data.status === 'parts_required' ? '⚠️ Parts Required' : '❌ Wrong Parts on Site';
+        const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
+        const loc = data.location_name ? ` @ ${data.location_name}` : '';
+        messages.push(`🔧 *TSG Job Alert*\n\n${label}\n\n${jobRef}${loc}\n\nUpdate the job when parts are confirmed.`);
+      }
+
+      // --- Overtime alert: is_overtime newly turned true ---
+      const overtimeChanged = changed_fields?.includes('is_overtime') || changed_fields?.includes('finish_time');
+      if (overtimeChanged && data.is_overtime === true && old_data?.is_overtime !== true) {
+        const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
+        const loc = data.location_name ? ` @ ${data.location_name}` : '';
+        const finishTime = data.finish_time || 'unknown time';
+        messages.push(`⏰ *Overtime Reminder*\n\n${jobRef}${loc} finished at ${finishTime}.\n\nOvertime starts from 17:30 — make sure to log it! 💼`);
+      }
     }
 
-    // Overtime alert: is_overtime flipped to true
-    const overtimeChanged = changed_fields?.includes('is_overtime') || changed_fields?.includes('finish_time');
-    const isNowOvertime = data.is_overtime === true;
-    const wasOvertime = old_data?.is_overtime === true;
-
-    if (event?.type === 'update' && overtimeChanged && isNowOvertime && !wasOvertime) {
-      const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
-      const location = data.location_name ? ` @ ${data.location_name}` : '';
-      const finishTime = data.finish_time || 'unknown time';
-      messages.push(`⏰ *Overtime Reminder*\n\n${jobRef}${location} finished at ${finishTime}.\n\nOvertime starts from 17:30 — make sure to log it! 💼`);
-    }
-
-    // New job created already flagged with parts issue or overtime
+    // --- New job created with parts issue or overtime ---
     if (event?.type === 'create') {
       if (partsStatuses.includes(data.status)) {
-        const statusLabel = data.status === 'parts_required' ? '⚠️ Parts Required' : '❌ Wrong Parts on Site';
+        const label = data.status === 'parts_required' ? '⚠️ Parts Required' : '❌ Wrong Parts on Site';
         const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
-        const location = data.location_name ? ` @ ${data.location_name}` : '';
-        messages.push(`🔧 *TSG Job Alert*\n\n${statusLabel}\n\n${jobRef}${location}\n\nNew job created with a parts issue noted.`);
+        const loc = data.location_name ? ` @ ${data.location_name}` : '';
+        messages.push(`🔧 *TSG Job Alert*\n\n${label}\n\n${jobRef}${loc}\n\nNew job created with a parts issue noted.`);
       }
       if (data.is_overtime === true) {
         const jobRef = data.job_number ? `Job #${data.job_number}` : 'Job';
-        const location = data.location_name ? ` @ ${data.location_name}` : '';
+        const loc = data.location_name ? ` @ ${data.location_name}` : '';
         const finishTime = data.finish_time || 'unknown time';
-        messages.push(`⏰ *Overtime Reminder*\n\n${jobRef}${location} logged with finish time ${finishTime}.\n\nDon't forget to log your overtime from 17:30! 💼`);
+        messages.push(`⏰ *Overtime Reminder*\n\n${jobRef}${loc} logged with finish time ${finishTime}.\n\nDon't forget to log your overtime from 17:30! 💼`);
       }
     }
 
@@ -58,13 +53,13 @@ Deno.serve(async (req) => {
       return Response.json({ skipped: true, reason: 'no alert conditions met' });
     }
 
-    // Deliver via the TSG job agent — pushes message into the user's WhatsApp conversation
+    // Deliver via TSG job agent — pushes into the user's WhatsApp conversation
     const conversations = await base44.asServiceRole.agents.listConversations({
       agent_name: 'tsg_job_agent',
     });
 
     let delivered = 0;
-    if (conversations && conversations.length > 0) {
+    if (conversations?.length > 0) {
       const latestConvo = conversations[0];
       for (const message of messages) {
         await base44.asServiceRole.agents.addMessage(latestConvo, {

@@ -12,6 +12,7 @@ import JobForm from '@/pages/JobForm';
 import JobDetail from '@/pages/JobDetail';
 import MonthlyView from '@/pages/MonthlyView';
 import WhatsAppAgent from '@/pages/WhatsAppAgent';
+import CalendarView from '@/pages/CalendarView';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -42,6 +43,7 @@ const AuthenticatedApp = () => {
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/jobs/:id/edit" element={<JobForm />} />
         <Route path="/monthly" element={<MonthlyView />} />
+        <Route path="/calendar" element={<CalendarView />} />
         <Route path="/whatsapp" element={<WhatsAppAgent />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
