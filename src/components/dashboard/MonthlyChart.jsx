@@ -12,7 +12,13 @@ export default function MonthlyChart({ jobs }) {
     else monthMap[key].incomplete++;
   });
 
-  const data = Object.values(monthMap).slice(-6);
+  const data = Object.values(monthMap)
+    .sort((a, b) => {
+      const [aM, aY] = a.month.split(' ');
+      const [bM, bY] = b.month.split(' ');
+      return new Date(`1 ${aM} 20${aY}`) - new Date(`1 ${bM} 20${bY}`);
+    })
+    .slice(-6);
 
   return (
     <div className="bg-card border border-border rounded-xl p-5">

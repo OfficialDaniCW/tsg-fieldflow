@@ -13,7 +13,7 @@ const STATUS_OPTIONS = [
   { value: 'incomplete', label: 'Incomplete' },
   { value: 'completed', label: 'Completed' },
   { value: 'parts_required', label: 'Parts Required' },
-  { value: 'wrong_parts', label: 'Wrong Parts' },
+  { value: 'non_conformance', label: 'Non-Conformance' },
   { value: 'parts_ordered', label: 'Parts Ordered' },
 ];
 
