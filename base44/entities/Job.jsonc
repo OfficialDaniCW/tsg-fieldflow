@@ -1,0 +1,102 @@
+{
+  "name": "Job",
+  "type": "object",
+  "properties": {
+    "job_number": {
+      "type": "string",
+      "description": "TSG job number"
+    },
+    "location_name": {
+      "type": "string",
+      "description": "Actual job location name"
+    },
+    "location_number": {
+      "type": "string",
+      "description": "Location number/code"
+    },
+    "job_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of job"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Job start time (HH:MM)"
+    },
+    "finish_time": {
+      "type": "string",
+      "description": "Job finish time (HH:MM)"
+    },
+    "is_overtime": {
+      "type": "boolean",
+      "default": false,
+      "description": "Finished after 5:30pm"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "incomplete",
+        "completed",
+        "parts_required",
+        "wrong_parts",
+        "parts_ordered"
+      ],
+      "default": "incomplete",
+      "description": "Current job status"
+    },
+    "completion_notes": {
+      "type": "string",
+      "description": "Notes about job completion"
+    },
+    "colleague_name": {
+      "type": "string",
+      "description": "Name of colleague on the job (if any)"
+    },
+    "image_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Uploaded job sheet images"
+    },
+    "parts": {
+      "type": "array",
+      "description": "Parts used or required for this job",
+      "items": {
+        "type": "object",
+        "properties": {
+          "part_number": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "used",
+              "required",
+              "ordered",
+              "wrong_part"
+            ]
+          }
+        }
+      }
+    },
+    "ai_extracted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Data was extracted via AI from image"
+    },
+    "whatsapp_thread_id": {
+      "type": "string",
+      "description": "Associated WhatsApp conversation thread"
+    }
+  },
+  "required": [
+    "job_number"
+  ]
+}

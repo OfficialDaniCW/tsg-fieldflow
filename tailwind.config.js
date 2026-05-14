@@ -9,7 +9,13 @@ module.exports = {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
+  		fontFamily: {
+  			inter: ['var(--font-inter)'],
+  			grotesk: ['var(--font-grotesk)'],
+  		},
   		colors: {
+  			success: 'hsl(var(--success))',
+  			warning: 'hsl(var(--warning))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
