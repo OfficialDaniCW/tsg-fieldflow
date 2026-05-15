@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import PartsManager from '@/components/jobs/PartsManager';
 import HistoryEntryManager from '@/components/jobs/HistoryEntryManager';
 import TravelTracker from '@/components/jobs/TravelTracker';
 import TravelHome from '@/components/jobs/TravelHome';
+import SiteAssetPicker from '@/components/jobs/SiteAssetPicker';
 import { cn } from '@/lib/utils';
 
 const defaultJob = {
@@ -23,7 +24,8 @@ const defaultJob = {
   start_time: '', finish_time: '', is_overtime: false, status: 'incomplete',
   job_type: 'reactive', category: 'pump', pump_number: '', equipment_id: '', equipment_name: '',
   inventory_type: '', completion_notes: '', personal_notes: '', colleague_name: '',
-  image_urls: [], parts: [], history_entries: [], ai_extracted: false, non_conformance_reason: ''
+  image_urls: [], parts: [], history_entries: [], ai_extracted: false, non_conformance_reason: '',
+  site_asset_ref: '', site_asset_type: ''
 };
 
 const EV_CHARGER_MAKES = [
@@ -93,6 +95,20 @@ export default function JobForm() {
     queryKey: ['equipment'],
     queryFn: () => base44.entities.Equipment.list('name', 100),
   });
+
+  const { data: siteRecords = [] } = useQuery({
+    queryKey: ['sites'],
+    queryFn: () => base44.entities.Site.list('name', 200),
+  });
+
+  // Find the matching site record to show equipment picker
+  const matchedSite = useMemo(() => {
+    if (!form.location_number && !form.location_name) return null;
+    return siteRecords.find(s =>
+      (form.location_number && s.location_number === form.location_number) ||
+      (form.location_name && s.name === form.location_name)
+    ) || null;
+  }, [siteRecords, form.location_number, form.location_name]);
 
   useEffect(() => {
     if (existing) setForm({ ...defaultJob, ...existing });
@@ -243,6 +259,19 @@ export default function JobForm() {
               <Input id="location_number" value={form.location_number} onChange={e => set('location_number', e.target.value)} placeholder="148677" className="h-11" />
             </div>
           </div>
+
+          {/* Site asset picker — only shown if the site has equipment logged */}
+          {matchedSite && (
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Site Asset</Label>
+              <SiteAssetPicker
+                site={matchedSite}
+                selectedRef={form.site_asset_ref}
+                selectedType={form.site_asset_type}
+                onChange={(ref, type) => setForm(prev => ({ ...prev, site_asset_ref: ref, site_asset_type: type }))}
+              />
+            </div>
+          )}
 
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1.5">

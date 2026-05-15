@@ -34,6 +34,19 @@
       "type": "string",
       "description": "Location number/code"
     },
+    "site_asset_ref": {
+      "type": "string",
+      "description": "Reference to a specific asset at the site e.g. 'Pump 3', 'Tank 1 Gauge', 'EV-2'"
+    },
+    "site_asset_type": {
+      "type": "string",
+      "enum": [
+        "pump",
+        "tank",
+        "ev_charger"
+      ],
+      "description": "Type of site asset this job relates to"
+    },
     "equipment_id": {
       "type": "string",
       "description": "Reference to Equipment entity"
