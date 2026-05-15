@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Download } from 'lucide-react';
+import { Plus, Search, Download, CloudOff } from 'lucide-react';
+import { getPendingJobs } from '@/lib/offlineDB';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -50,6 +51,11 @@ export default function JobsList() {
   const { data: jobs = [], isLoading } = useJobs();
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
+  const [pendingJobs, setPendingJobs] = useState([]);
+
+  useEffect(() => {
+    getPendingJobs().then(setPendingJobs);
+  }, []);
 
   const filtered = jobs.filter(job => {
     const matchSearch = !search ||
@@ -109,6 +115,24 @@ export default function JobsList() {
           OT Only
         </Button>
       </div>
+
+      {/* Pending offline jobs */}
+      {pendingJobs.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+          <div className="flex items-center gap-2 text-amber-800 text-sm font-semibold">
+            <CloudOff className="w-4 h-4" />
+            {pendingJobs.length} job{pendingJobs.length > 1 ? 's' : ''} saved offline — not yet synced
+          </div>
+          {pendingJobs.map(j => (
+            <div key={j.offline_id} className="flex items-center justify-between text-xs text-amber-700 bg-amber-100 rounded-lg px-3 py-2">
+              <span className="font-semibold">#{j.job_number || 'No number'}</span>
+              <span>{j.location_name || '—'}</span>
+              <span>{j.job_date || '—'}</span>
+              <span className="italic">Pending sync</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Results */}
       {isLoading ? (
