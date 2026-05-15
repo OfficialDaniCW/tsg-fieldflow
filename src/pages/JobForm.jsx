@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Save, Trash2, Wrench, Clock, CheckCircle2, AlertTriangle, Package, ShoppingCart, WifiOff } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Wrench, Clock, CheckCircle2, AlertTriangle, Package, ShoppingCart, WifiOff, Ban } from 'lucide-react';
 import { savePendingJob } from '@/lib/offlineDB';
 import ImageUploader from '@/components/jobs/ImageUploader';
 import AIExtractButton from '@/components/jobs/AIExtractButton';
@@ -39,11 +39,20 @@ const JOB_TYPES = [
 ];
 
 const STATUS_OPTIONS = [
+  { value: 'completed_first_visit', label: 'Completed (1st Visit)', icon: CheckCircle2, color: 'border-green-300 bg-green-50 text-green-700' },
+  { value: 'completed_return_visit', label: 'Completed (Return Visit)', icon: CheckCircle2, color: 'border-emerald-300 bg-emerald-50 text-emerald-700' },
   { value: 'incomplete', label: 'Incomplete', icon: Clock, color: 'border-red-300 bg-red-50 text-red-700' },
-  { value: 'completed', label: 'Completed', icon: CheckCircle2, color: 'border-green-300 bg-green-50 text-green-700' },
-  { value: 'parts_required', label: 'Parts Required', icon: Package, color: 'border-amber-300 bg-amber-50 text-amber-700' },
-  { value: 'non_conformance', label: 'Non-Conformance', icon: AlertTriangle, color: 'border-orange-300 bg-orange-50 text-orange-700' },
+  { value: 'needs_parts', label: 'Needs Parts', icon: Package, color: 'border-amber-300 bg-amber-50 text-amber-700' },
   { value: 'parts_ordered', label: 'Parts Ordered', icon: ShoppingCart, color: 'border-blue-300 bg-blue-50 text-blue-700' },
+  { value: 'wrong_parts_supplied', label: 'Wrong Parts Supplied', icon: AlertTriangle, color: 'border-orange-300 bg-orange-50 text-orange-700' },
+  { value: 'faulty_parts_supplied', label: 'Faulty Parts Supplied', icon: AlertTriangle, color: 'border-orange-300 bg-orange-50 text-orange-700' },
+  { value: 'missing_stock', label: 'Missing Stock / Not Replenished', icon: Package, color: 'border-amber-300 bg-amber-50 text-amber-700' },
+  { value: 'no_access', label: 'No Access', icon: AlertTriangle, color: 'border-slate-300 bg-slate-50 text-slate-700' },
+  { value: 'tooling_equipment_issue', label: 'Tooling / Equipment Issue', icon: Wrench, color: 'border-purple-300 bg-purple-50 text-purple-700' },
+  { value: 'previous_diagnosis_issue', label: 'Previous Diagnosis Issue', icon: AlertTriangle, color: 'border-orange-300 bg-orange-50 text-orange-700' },
+  { value: 'awaiting_others', label: 'Awaiting Others', icon: Clock, color: 'border-sky-300 bg-sky-50 text-sky-700' },
+  { value: 'unable_to_complete', label: 'Unable to Complete', icon: AlertTriangle, color: 'border-red-300 bg-red-50 text-red-700' },
+  { value: 'non_conformance', label: 'Non-Conformance', icon: AlertTriangle, color: 'border-orange-300 bg-orange-50 text-orange-700' },
 ];
 
 function checkOvertime(finishTime) {

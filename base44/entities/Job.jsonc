@@ -58,11 +58,22 @@
     "status": {
       "type": "string",
       "enum": [
+        "completed_first_visit",
+        "completed_return_visit",
         "incomplete",
-        "completed",
-        "parts_required",
+        "needs_parts",
+        "parts_ordered",
+        "wrong_parts_supplied",
+        "faulty_parts_supplied",
+        "missing_stock",
+        "no_access",
+        "tooling_equipment_issue",
+        "previous_diagnosis_issue",
+        "awaiting_others",
+        "unable_to_complete",
         "non_conformance",
-        "parts_ordered"
+        "parts_required",
+        "completed"
       ],
       "default": "incomplete",
       "description": "Current job status"

@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, TrendingUp, AlertTriangle } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import StatusBadge from '@/components/jobs/StatusBadge';
+import BandingDashboard from '@/components/dashboard/BandingDashboard';
 
 const NC_REASON_LABELS = {
   wrong_parts_ordered: 'Wrong Parts Ordered',
@@ -25,8 +26,8 @@ export default function FTFReport() {
   const monthStr = format(currentMonth, 'yyyy-MM');
   const monthJobs = allJobs.filter(job => job.job_date?.startsWith(monthStr));
 
-  const completed = monthJobs.filter(j => j.status === 'completed');
-  const nonConformance = monthJobs.filter(j => j.status === 'non_conformance' || j.status === 'wrong_parts');
+  const completed = monthJobs.filter(j => ['completed', 'completed_first_visit', 'completed_return_visit'].includes(j.status));
+  const nonConformance = monthJobs.filter(j => ['non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied', 'previous_diagnosis_issue'].includes(j.status));
   const total = monthJobs.length;
   const ftfRate = total > 0 ? Math.round((completed.length / total) * 100) : null;
 
@@ -156,6 +157,9 @@ export default function FTFReport() {
           </div>
         </div>
       )}
+
+      {/* Banding Dashboard */}
+      <BandingDashboard jobs={monthJobs} />
 
       {total > 0 && nonConformance.length === 0 && (
         <div className="text-center py-8 bg-green-50 border border-green-200 rounded-2xl">
