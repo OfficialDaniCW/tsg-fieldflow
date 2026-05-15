@@ -14,6 +14,7 @@ import ImageUploader from '@/components/jobs/ImageUploader';
 import AIExtractButton from '@/components/jobs/AIExtractButton';
 import PartsManager from '@/components/jobs/PartsManager';
 import HistoryEntryManager from '@/components/jobs/HistoryEntryManager';
+import TravelTracker from '@/components/jobs/TravelTracker';
 import { cn } from '@/lib/utils';
 
 const defaultJob = {
@@ -317,6 +318,23 @@ export default function JobForm() {
             </Label>
             {form.is_overtime && <span className="text-xs font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">OT</span>}
           </div>
+        </section>
+
+        {/* Travel Tracker */}
+        <section className="space-y-3">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Travel</Label>
+          <TravelTracker
+            onTravelComplete={(result) => {
+              // Auto-fill travel duration into personal notes
+              const note = `Travel: ${result.startTime} → ${result.endTime} (${Math.round(result.durationMins)}m)`;
+              setForm(prev => ({
+                ...prev,
+                personal_notes: prev.personal_notes
+                  ? prev.personal_notes + '\n' + note
+                  : note,
+              }));
+            }}
+          />
         </section>
 
         {/* Notes */}
