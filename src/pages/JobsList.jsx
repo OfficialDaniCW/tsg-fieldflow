@@ -68,16 +68,16 @@ export default function JobsList() {
   });
 
   return (
-    <div className="p-5 md:p-8 max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-grotesk text-2xl font-bold">All Jobs</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => exportCSV(filtered)}>
+    <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-4 md:space-y-6">
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="font-grotesk text-xl md:text-2xl font-bold">All Jobs</h1>
+        <div className="flex gap-2 flex-shrink-0">
+          <Button variant="outline" size="sm" className="gap-1.5 h-9" onClick={() => exportCSV(filtered)}>
             <Download className="w-4 h-4" />
-            Export CSV
+            <span className="hidden sm:inline">Export CSV</span>
           </Button>
           <Link to="/jobs/new">
-            <Button className="gap-2">
+            <Button size="sm" className="gap-1.5 h-9">
               <Plus className="w-4 h-4" />
               New Job
             </Button>
@@ -86,34 +86,35 @@ export default function JobsList() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex flex-col gap-2">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search job number, location..."
-            className="pl-9"
+            className="pl-9 h-11 text-base"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-44">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {STATUS_OPTIONS.map(o => (
-              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          variant={overtimeOnly ? 'default' : 'outline'}
-          size="sm"
-          className="gap-1.5 whitespace-nowrap"
-          onClick={() => setOvertimeOnly(!overtimeOnly)}
-        >
-          OT Only
-        </Button>
+        <div className="flex gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="flex-1 h-11">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUS_OPTIONS.map(o => (
+                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            variant={overtimeOnly ? 'default' : 'outline'}
+            className="gap-1.5 whitespace-nowrap h-11 px-4"
+            onClick={() => setOvertimeOnly(!overtimeOnly)}
+          >
+            OT Only
+          </Button>
+        </div>
       </div>
 
       {/* Pending offline jobs */}

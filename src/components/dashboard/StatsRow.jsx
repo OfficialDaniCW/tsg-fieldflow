@@ -23,14 +23,14 @@ export default function StatsRow({ jobs, allJobsCount }) {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
       {stats.map(({ label, value, sub, icon: Icon, color, bg }) => (
-        <div key={label} className="bg-card border border-border rounded-xl p-4">
-          <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center mb-3`}>
-            <Icon className={`w-4 h-4 ${color}`} />
+        <div key={label} className="bg-card border border-border rounded-xl p-3 md:p-4">
+          <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg ${bg} flex items-center justify-center mb-2 md:mb-3`}>
+            <Icon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${color}`} />
           </div>
-          <p className="text-2xl font-grotesk font-bold text-foreground">{value}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+          <p className="text-xl md:text-2xl font-grotesk font-bold text-foreground">{value}</p>
+          <p className="text-xs text-muted-foreground mt-0.5 leading-tight">{label}</p>
           {sub && <p className="text-xs text-muted-foreground/70 mt-0.5">{sub}</p>}
         </div>
       ))}

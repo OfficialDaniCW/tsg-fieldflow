@@ -10,9 +10,9 @@ export default function JobCard({ job, showCreatedBy = false }) {
       to={`/jobs/${job.id}`}
       className="block bg-card border border-border rounded-xl p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200 group"
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
             <span className="font-grotesk font-semibold text-sm text-foreground">
               <Hash className="w-3.5 h-3.5 inline mr-0.5 text-muted-foreground" />
               {job.job_number}
@@ -22,16 +22,16 @@ export default function JobCard({ job, showCreatedBy = false }) {
           </div>
 
           {job.location_name && (
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-1">
-              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="truncate">{job.location_name?.toUpperCase()}</span>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
+              <MapPin className="w-3 h-3 flex-shrink-0" />
+              <span className="truncate font-medium">{job.location_name?.toUpperCase()}</span>
               {job.location_number && (
-                <span className="text-xs text-muted-foreground/70">({job.location_number})</span>
+                <span className="text-xs text-muted-foreground/60 flex-shrink-0">({job.location_number})</span>
               )}
             </div>
           )}
 
-          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground flex-wrap">
             {job.job_date && (
               <span>{format(new Date(job.job_date), 'dd MMM yyyy')}</span>
             )}
@@ -45,12 +45,6 @@ export default function JobCard({ job, showCreatedBy = false }) {
               <span className="flex items-center gap-1">
                 <Users className="w-3 h-3" />
                 {job.colleague_name}
-              </span>
-            )}
-            {job.image_urls?.length > 0 && (
-              <span className="flex items-center gap-1">
-                <Image className="w-3 h-3" />
-                {job.image_urls.length}
               </span>
             )}
             {showCreatedBy && job.created_by && (
