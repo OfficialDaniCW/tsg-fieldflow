@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
-import { ArrowLeft, Pencil, MapPin, Hash, Clock, Users, Package, Calendar, Wrench, History, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Pencil, MapPin, Hash, Clock, Users, Package, Calendar, Wrench, History, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatusBadge from '@/components/jobs/StatusBadge';
 import OvertimeBadge from '@/components/jobs/OvertimeBadge';
@@ -17,10 +17,10 @@ const partStatusColors = {
 };
 
 const JOB_TYPE_LABELS = {
-  reactive: '🔧 Reactive',
-  ppm: '📋 PPM',
-  vr2: '💨 VR2',
-  other: '📁 Other',
+  reactive: 'Reactive',
+  ppm: 'PPM',
+  vr2: 'VR2',
+  other: 'Other',
 };
 
 const NC_REASON_LABELS = {
@@ -99,8 +99,8 @@ export default function JobDetail() {
             </span>
           )}
           {job.pump_number && (
-            <span className="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-blue-200">
-              🔩 Pump {job.pump_number}
+            <span className="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-blue-200 flex items-center gap-1">
+              <Wrench className="w-3 h-3" />Pump {job.pump_number}
             </span>
           )}
           {job.equipment_name && (
@@ -109,8 +109,8 @@ export default function JobDetail() {
             </span>
           )}
           {job.non_conformance_reason && (
-            <span className="bg-orange-50 text-orange-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-orange-200">
-              ⚠ {NC_REASON_LABELS[job.non_conformance_reason]}
+            <span className="bg-orange-50 text-orange-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-orange-200 flex items-center gap-1">
+              <AlertTriangle className="w-3 h-3" />{NC_REASON_LABELS[job.non_conformance_reason]}
             </span>
           )}
         </div>
@@ -151,7 +151,7 @@ export default function JobDetail() {
         {/* Personal notes */}
         {job.personal_notes && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <p className="text-xs text-amber-700 mb-2 font-semibold uppercase tracking-wide">📝 My Notes</p>
+            <p className="text-xs text-amber-700 mb-2 font-semibold uppercase tracking-wide">My Notes</p>
             <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{job.personal_notes}</p>
           </div>
         )}
@@ -259,7 +259,9 @@ export default function JobDetail() {
         )}
 
         {job.ai_extracted && (
-          <p className="text-xs text-muted-foreground">✦ Some details were auto-extracted from job sheet images</p>
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <Wrench className="w-3 h-3" />Some details were auto-extracted from job sheet images
+          </p>
         )}
       </div>
     </div>

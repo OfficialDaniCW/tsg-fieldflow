@@ -86,7 +86,7 @@ export default function FTFReport() {
           </div>
         )}
         <p className="text-xs text-muted-foreground mt-2">
-          {ftfRate === null ? 'No jobs recorded this month.' : ftfRate >= 80 ? '🏆 Excellent first time fix rate!' : ftfRate >= 60 ? '⚠️ Aim for above 80% FTF rate.' : '❌ Low FTF rate — review non-conformance reasons below.'}
+          {ftfRate === null ? 'No jobs recorded this month.' : ftfRate >= 80 ? 'Excellent first time fix rate!' : ftfRate >= 60 ? 'Aim for above 80% FTF rate.' : 'Low FTF rate — review non-conformance reasons below.'}
         </p>
       </div>
 
@@ -163,7 +163,6 @@ export default function FTFReport() {
 
       {total > 0 && nonConformance.length === 0 && (
         <div className="text-center py-8 bg-green-50 border border-green-200 rounded-2xl">
-          <p className="text-2xl mb-1">🎉</p>
           <p className="font-semibold text-green-700">No non-conformances this month!</p>
           <p className="text-sm text-green-600 mt-0.5">Perfect first time fix rate.</p>
         </div>

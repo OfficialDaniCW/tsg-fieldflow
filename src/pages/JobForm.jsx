@@ -45,10 +45,10 @@ const NC_REASONS = [
 ];
 
 const JOB_TYPES = [
-  { value: 'reactive', label: '🔧 Reactive', desc: 'Breakdown / fault call' },
-  { value: 'ppm', label: '📋 PPM', desc: 'Planned maintenance audit' },
-  { value: 'vr2', label: '💨 VR2', desc: 'Vapour recovery' },
-  { value: 'other', label: '📁 Other', desc: '' },
+  { value: 'reactive', label: 'Reactive', desc: 'Breakdown / fault call' },
+  { value: 'ppm', label: 'PPM', desc: 'Planned maintenance audit' },
+  { value: 'vr2', label: 'VR2', desc: 'Vapour recovery' },
+  { value: 'other', label: 'Other', desc: '' },
 ];
 
 const STATUS_OPTIONS = [
@@ -202,7 +202,7 @@ export default function JobForm() {
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">Category</Label>
             <div className="grid grid-cols-2 gap-2">
-              {[{ value: 'pump', label: '⛽ Pump' }, { value: 'ev', label: '⚡ EV Charger' }].map(c => (
+              {[{ value: 'pump', label: 'Pump' }, { value: 'ev', label: 'EV Charger' }].map(c => (
                 <button
                   key={c.value}
                   onClick={() => setForm(prev => ({ ...prev, category: c.value, equipment_name: '' }))}
@@ -370,7 +370,7 @@ export default function JobForm() {
 
         {/* Personal notes */}
         <section className="space-y-1.5">
-          <Label htmlFor="personal_notes" className="text-xs font-semibold text-amber-700 uppercase tracking-wide">📝 My Notes</Label>
+          <Label htmlFor="personal_notes" className="text-xs font-semibold text-amber-700 uppercase tracking-wide">My Notes</Label>
           <p className="text-xs text-muted-foreground">Private log for challenges, access issues, extra hours — for your reference in management discussions.</p>
           <Textarea
             id="personal_notes"

@@ -6,8 +6,8 @@ export default function WhatsAppAgent() {
   const whatsappUrl = base44.agents.getWhatsAppConnectURL('tsg_job_agent');
 
   const features = [
-    { icon: Sparkles, title: '☀️ Morning briefing at 7am', desc: "Every morning you'll get a WhatsApp summary of today's jobs, anything still outstanding, and jobs missing info like finish times or outcomes." },
-    { icon: CheckCircle2, title: '🌙 Evening wrap-up at 5pm', desc: "Each evening you'll get a recap of what was completed, what wasn't, and a checklist of anything still needing to be filled in." },
+    { icon: Sparkles, title: 'Morning briefing at 7am', desc: "Every morning you'll get a WhatsApp summary of today's jobs, anything still outstanding, and jobs missing info like finish times or outcomes." },
+    { icon: CheckCircle2, title: 'Evening wrap-up at 5pm', desc: "Each evening you'll get a recap of what was completed, what wasn't, and a checklist of anything still needing to be filled in." },
     { icon: Image, title: 'Send job sheet photos', desc: 'Upload job sheet images via WhatsApp — the agent extracts all the data automatically.' },
     { icon: MessageSquare, title: 'Update jobs by text', desc: 'Message the agent anytime to update times, status, notes, and parts — no need to open the app.' },
   ];

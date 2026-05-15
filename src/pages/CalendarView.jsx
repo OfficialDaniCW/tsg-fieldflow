@@ -51,7 +51,7 @@ export default function CalendarView() {
   const getDayDot = (jobs) => {
     if (!jobs?.length) return null;
     const hasOvertime = jobs.some(j => j.is_overtime);
-    const hasParts = jobs.some(j => j.status === 'parts_required' || j.status === 'wrong_parts');
+    const hasParts = jobs.some(j => ['parts_required', 'needs_parts', 'wrong_parts_supplied', 'faulty_parts_supplied'].includes(j.status));
     const allDone = jobs.every(j => j.status === 'completed');
     if (hasOvertime) return 'overtime';
     if (hasParts) return 'parts';

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MapPin, Navigation, RotateCcw, ExternalLink, Clock, ChevronRight } from 'lucide-react';
+import { MapPin, Navigation, RotateCcw, ExternalLink, Clock, ChevronRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatusBadge from '@/components/jobs/StatusBadge';
 
@@ -101,7 +101,7 @@ export default function TodayRoutePlanner({ jobs }) {
             >
               {/* Step number */}
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${done ? 'bg-green-100 text-green-700' : 'bg-primary/10 text-primary'}`}>
-                {done ? '✓' : idx + 1}
+                {done ? <Check className="w-3.5 h-3.5" /> : idx + 1}
               </div>
 
               {/* Job info */}
