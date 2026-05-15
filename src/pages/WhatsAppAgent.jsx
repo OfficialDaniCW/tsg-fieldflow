@@ -6,10 +6,10 @@ export default function WhatsAppAgent() {
   const whatsappUrl = base44.agents.getWhatsAppConnectURL('tsg_job_agent');
 
   const features = [
-    { icon: Image, title: 'Send job sheet photos', desc: 'Upload one or multiple job sheet images via WhatsApp — the agent will extract all the data automatically.' },
-    { icon: MessageSquare, title: 'Update jobs by text', desc: 'Message the agent to update start/finish times, status, colleague, notes and parts — all without opening the app.' },
-    { icon: Sparkles, title: 'AI-powered extraction', desc: 'Job numbers, locations, parts, and times are read from images automatically using AI.' },
-    { icon: CheckCircle2, title: 'Mark completion status', desc: 'Tell the agent if a job is done, needs parts, or has wrong parts on site — it updates instantly.' },
+    { icon: Sparkles, title: '☀️ Morning briefing at 7am', desc: "Every morning you'll get a WhatsApp summary of today's jobs, anything still outstanding, and jobs missing info like finish times or outcomes." },
+    { icon: CheckCircle2, title: '🌙 Evening wrap-up at 5pm', desc: "Each evening you'll get a recap of what was completed, what wasn't, and a checklist of anything still needing to be filled in." },
+    { icon: Image, title: 'Send job sheet photos', desc: 'Upload job sheet images via WhatsApp — the agent extracts all the data automatically.' },
+    { icon: MessageSquare, title: 'Update jobs by text', desc: 'Message the agent anytime to update times, status, notes, and parts — no need to open the app.' },
   ];
 
   return (
@@ -64,12 +64,13 @@ export default function WhatsAppAgent() {
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Example messages to send</p>
         <div className="bg-card border border-border rounded-xl overflow-hidden divide-y divide-border">
           {[
-            '"Create job TSG-45678 at Tesco Slough, started 8am finished 4:30pm"',
-            '"Job TSG-45678 needs parts: part 123456, need 2"',
-            '"Mark job TSG-45678 as completed"',
-            '"Job TSG-45678 had wrong parts on site"',
-            '"I was with John Smith on job TSG-45678"',
-            '"List my incomplete jobs"',
+            '"Reactive TSG-45678 at Tesco Slough, 8am-4:30pm pump 9"',
+            '"Job TSG-45678 completed first visit"',
+            '"TSG-45678 needs parts: part 123456, qty 2"',
+            '"Job TSG-45678 no access today"',
+            '"What jobs am I missing info on?"',
+            '"Morning briefing"',
+            '"What\'s still outstanding?"',
           ].map((cmd, i) => (
             <div key={i} className="px-4 py-3 text-sm text-muted-foreground font-mono hover:bg-muted/50">
               {cmd}
