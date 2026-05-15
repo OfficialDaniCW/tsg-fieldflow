@@ -24,7 +24,7 @@ export default function JobCard({ job, showCreatedBy = false }) {
           {job.location_name && (
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-1">
               <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="truncate">{job.location_name}</span>
+              <span className="truncate">{job.location_name?.toUpperCase()}</span>
               {job.location_number && (
                 <span className="text-xs text-muted-foreground/70">({job.location_number})</span>
               )}
