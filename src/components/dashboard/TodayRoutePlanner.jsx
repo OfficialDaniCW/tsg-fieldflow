@@ -55,17 +55,17 @@ export default function TodayRoutePlanner({ jobs }) {
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-border bg-muted/30 gap-2">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-          <span className="text-sm font-semibold text-foreground whitespace-nowrap">Today's Route</span>
-          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full flex-shrink-0">{todayJobs.length}</span>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-primary" />
+          <span className="text-sm font-semibold text-foreground">Today's Route</span>
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{todayJobs.length} job{todayJobs.length !== 1 ? 's' : ''}</span>
         </div>
-        <div className="flex items-center gap-1.5 flex-shrink-0">
+        <div className="flex items-center gap-2">
           <Button
             size="sm"
             variant={optimised ? 'default' : 'outline'}
-            className="h-7 text-xs gap-1 px-2.5"
+            className="h-7 text-xs gap-1.5 px-3"
             onClick={() => setOptimised(v => !v)}
           >
             {optimised ? <RotateCcw className="w-3 h-3" /> : <Navigation className="w-3 h-3" />}
@@ -73,7 +73,7 @@ export default function TodayRoutePlanner({ jobs }) {
           </Button>
           {mapsUrl && (
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer">
-              <Button size="sm" variant="outline" className="h-7 text-xs gap-1 px-2.5">
+              <Button size="sm" variant="outline" className="h-7 text-xs gap-1.5 px-3">
                 <ExternalLink className="w-3 h-3" />
                 Maps
               </Button>
@@ -97,7 +97,7 @@ export default function TodayRoutePlanner({ jobs }) {
             <Link
               key={job.id}
               to={`/jobs/${job.id}`}
-              className="flex items-center gap-3 px-3 py-3 hover:bg-muted/40 transition-colors"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40 transition-colors"
             >
               {/* Step number */}
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${done ? 'bg-green-100 text-green-700' : 'bg-primary/10 text-primary'}`}>
@@ -106,15 +106,15 @@ export default function TodayRoutePlanner({ jobs }) {
 
               {/* Job info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
+                <div className="flex items-center gap-2">
                   <span className={`text-sm font-semibold ${done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                     #{job.job_number}
                   </span>
                   <StatusBadge status={job.status} />
                 </div>
-                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                <div className="flex items-center gap-3 mt-0.5">
                   {job.location_name && (
-                    <span className="text-xs text-muted-foreground truncate max-w-[160px]">{job.location_name}</span>
+                    <span className="text-xs text-muted-foreground truncate">{job.location_name}</span>
                   )}
                   {job.start_time && (
                     <span className="text-xs text-muted-foreground flex items-center gap-1 flex-shrink-0">
