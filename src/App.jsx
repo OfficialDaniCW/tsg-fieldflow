@@ -16,6 +16,7 @@ import CalendarView from '@/pages/CalendarView';
 import FTFReport from '@/pages/FTFReport';
 import AssetLibrary from '@/pages/AssetLibrary';
 import AssetDetail from '@/pages/AssetDetail';
+import Sites from '@/pages/Sites';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -51,6 +52,7 @@ const AuthenticatedApp = () => {
         <Route path="/whatsapp" element={<WhatsAppAgent />} />
         <Route path="/assets" element={<AssetLibrary />} />
         <Route path="/assets/:id" element={<AssetDetail />} />
+        <Route path="/sites" element={<Sites />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
