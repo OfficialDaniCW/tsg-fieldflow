@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Hash, Clock, Users, ChevronRight, Image } from 'lucide-react';
+import { MapPin, Hash, Clock, Users, ChevronRight, Image, UserCircle } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import OvertimeBadge from './OvertimeBadge';
 import { format } from 'date-fns';
 
-export default function JobCard({ job }) {
+export default function JobCard({ job, showCreatedBy = false }) {
   return (
     <Link
       to={`/jobs/${job.id}`}
@@ -51,6 +51,12 @@ export default function JobCard({ job }) {
               <span className="flex items-center gap-1">
                 <Image className="w-3 h-3" />
                 {job.image_urls.length}
+              </span>
+            )}
+            {showCreatedBy && job.created_by && (
+              <span className="flex items-center gap-1 text-primary/70 font-medium">
+                <UserCircle className="w-3 h-3" />
+                {job.created_by.split('@')[0]}
               </span>
             )}
           </div>

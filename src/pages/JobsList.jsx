@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import JobCard from '@/components/jobs/JobCard';
+import { useJobs } from '@/hooks/useJobs';
+import { useAuth } from '@/lib/AuthContext';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All Statuses' },
@@ -22,10 +22,9 @@ export default function JobsList() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [overtimeOnly, setOvertimeOnly] = useState(false);
 
-  const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list('-job_date', 1000),
-  });
+  const { data: jobs = [], isLoading } = useJobs();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   const filtered = jobs.filter(job => {
     const matchSearch = !search ||
@@ -91,7 +90,7 @@ export default function JobsList() {
         </div>
       ) : (
         <div className="space-y-2">
-          {filtered.map(job => <JobCard key={job.id} job={job} />)}
+          {filtered.map(job => <JobCard key={job.id} job={job} showCreatedBy={isAdmin} />)}
         </div>
       )}
     </div>

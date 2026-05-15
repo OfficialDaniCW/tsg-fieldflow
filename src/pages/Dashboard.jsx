@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Plus, AlertTriangle, Clock } from 'lucide-react';
@@ -9,12 +7,13 @@ import StatsRow from '@/components/dashboard/StatsRow';
 import MonthlyChart from '@/components/dashboard/MonthlyChart';
 import JobCard from '@/components/jobs/JobCard';
 import StatusBadge from '@/components/jobs/StatusBadge';
+import { useJobs } from '@/hooks/useJobs';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function Dashboard() {
-  const { data: allJobs = [] } = useQuery({
-    queryKey: ['jobs'],
-    queryFn: () => base44.entities.Job.list('-job_date', 1000),
-  });
+  const { data: allJobs = [] } = useJobs();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   const now = new Date();
   const thisMonthStr = format(now, 'yyyy-MM');
@@ -107,7 +106,7 @@ export default function Dashboard() {
           <Link to="/jobs" className="text-xs text-primary hover:underline">View all</Link>
         </div>
         <div className="space-y-2">
-          {recentJobs.map(job => <JobCard key={job.id} job={job} />)}
+          {recentJobs.map(job => <JobCard key={job.id} job={job} showCreatedBy={isAdmin} />)}
           {recentJobs.length === 0 && (
             <div className="text-center py-10 text-muted-foreground">
               <p className="text-sm">No jobs yet.</p>
