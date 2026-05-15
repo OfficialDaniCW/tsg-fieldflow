@@ -1,5 +1,5 @@
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Briefcase, MessageCircle, BarChart2, ChevronUp, LogOut, Archive, MapPin } from 'lucide-react';
+import { LayoutDashboard, Briefcase, MessageCircle, BarChart2, ChevronUp, LogOut, Archive, MapPin, Clock, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
@@ -7,11 +7,13 @@ import OfflineBanner from '@/components/layout/OfflineBanner';
 
 // Bottom nav: 4 items — Home, Jobs, Insights (grouped), WhatsApp
 const insightItems = [
+  { path: '/timesheet', label: 'Timesheet' },
   { path: '/calendar', label: 'Calendar' },
   { path: '/monthly', label: 'Monthly' },
   { path: '/ftf', label: 'FTF Report' },
   { path: '/assets', label: 'Asset Library' },
   { path: '/sites', label: 'Sites' },
+  { path: '/settings', label: 'Settings' },
 ];
 
 const mainNavItems = [
@@ -24,12 +26,14 @@ const mainNavItems = [
 const allNavItems = [
   { path: '/', label: 'Home', icon: LayoutDashboard },
   { path: '/jobs', label: 'Jobs', icon: Briefcase },
+  { path: '/timesheet', label: 'Timesheet', icon: Clock },
   { path: '/calendar', label: 'Calendar', icon: BarChart2 },
   { path: '/monthly', label: 'Monthly', icon: BarChart2 },
   { path: '/ftf', label: 'FTF Report', icon: BarChart2 },
   { path: '/assets', label: 'Asset Library', icon: Archive },
   { path: '/sites', label: 'Sites', icon: MapPin },
   { path: '/whatsapp', label: 'WhatsApp', icon: MessageCircle },
+  { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function AppLayout() {

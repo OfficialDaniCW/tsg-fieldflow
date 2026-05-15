@@ -16,7 +16,9 @@ import CalendarView from '@/pages/CalendarView';
 import FTFReport from '@/pages/FTFReport';
 import AssetLibrary from '@/pages/AssetLibrary';
 import AssetDetail from '@/pages/AssetDetail';
-import Sites from '@/pages/Sites';
+import Sites from '@/pages/Sites.jsx';
+import Timesheet from '@/pages/Timesheet';
+import Settings from '@/pages/Settings';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -53,6 +55,8 @@ const AuthenticatedApp = () => {
         <Route path="/assets" element={<AssetLibrary />} />
         <Route path="/assets/:id" element={<AssetDetail />} />
         <Route path="/sites" element={<Sites />} />
+        <Route path="/timesheet" element={<Timesheet />} />
+        <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -16,9 +16,14 @@
         "pump",
         "tank_gauge",
         "vr2",
+        "ev_charger",
         "other"
       ],
       "description": "Type of equipment"
+    },
+    "pump_number": {
+      "type": "string",
+      "description": "Specific pump number (e.g. 1, 9 & 10)"
     },
     "location_name": {
       "type": "string",
@@ -27,6 +32,38 @@
     "location_number": {
       "type": "string",
       "description": "Site code"
+    },
+    "address_line1": {
+      "type": "string",
+      "description": "Street address of site"
+    },
+    "city": {
+      "type": "string",
+      "description": "Town / city"
+    },
+    "postcode": {
+      "type": "string",
+      "description": "Postcode"
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "good",
+        "fair",
+        "poor",
+        "decommissioned"
+      ],
+      "description": "Current condition"
+    },
+    "install_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Installation date"
+    },
+    "last_service_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of last service"
     },
     "notes": {
       "type": "string",
