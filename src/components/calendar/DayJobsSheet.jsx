@@ -25,16 +25,16 @@ export default function DayJobsSheet({ day, jobs, onClose, onJobMoved }) {
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed bottom-0 left-0 right-0 z-40 bg-card rounded-t-2xl shadow-2xl border-t border-border"
-        style={{ maxHeight: '65vh' }}
+        className="fixed bottom-0 left-0 right-0 z-40 bg-card rounded-t-2xl shadow-2xl border-t border-border flex flex-col"
+        style={{ maxHeight: '75vh', height: '75vh' }}
       >
         {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-1">
+        <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
           <div className="w-10 h-1 rounded-full bg-border" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-border">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border flex-shrink-0">
           <div>
             <p className="font-grotesk font-semibold text-base text-foreground">
               {format(day, 'EEEE, d MMMM')}
@@ -52,7 +52,7 @@ export default function DayJobsSheet({ day, jobs, onClose, onJobMoved }) {
         </div>
 
         {/* Jobs list */}
-        <div className="overflow-y-auto px-4 py-3 space-y-2" style={{ maxHeight: 'calc(65vh - 100px)' }}>
+        <div className="overflow-y-auto px-4 py-3 space-y-2 flex-1 min-h-0">
           {jobs.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-muted-foreground text-sm">No jobs on this day</p>
