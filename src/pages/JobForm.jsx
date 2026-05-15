@@ -19,10 +19,21 @@ import { cn } from '@/lib/utils';
 const defaultJob = {
   job_number: '', location_name: '', location_number: '', job_date: '',
   start_time: '', finish_time: '', is_overtime: false, status: 'incomplete',
-  job_type: 'reactive', pump_number: '', equipment_id: '', equipment_name: '',
-  completion_notes: '', personal_notes: '', colleague_name: '', image_urls: [], parts: [],
-  history_entries: [], ai_extracted: false, non_conformance_reason: ''
+  job_type: 'reactive', category: 'pump', pump_number: '', equipment_id: '', equipment_name: '',
+  inventory_type: '', completion_notes: '', personal_notes: '', colleague_name: '',
+  image_urls: [], parts: [], history_entries: [], ai_extracted: false, non_conformance_reason: ''
 };
+
+const EV_CHARGER_MAKES = [
+  'Kempower', 'Alpitronic', 'Tritium', 'Zerova', 'ABB', 'Delta', 'Alfen',
+  'Ekoenergetyka', 'Tesla Supercharger', 'Schneider', 'Wallbox', 'Pod Point',
+  'EO Charging', 'Other EV',
+];
+
+const PUMP_MAKES = [
+  'Gilbarco', 'Wayne', 'Tokheim', 'Petrotec', 'Bennett', 'Tatsuno',
+  'Scheidt & Bachmann', 'Veeder-Root', 'OPW', 'Franklin Fueling', 'Gauges', 'Other Pump',
+];
 
 const NC_REASONS = [
   { value: 'wrong_parts_ordered', label: 'Wrong Parts Ordered' },
@@ -185,6 +196,41 @@ export default function JobForm() {
             <Input id="job_number" value={form.job_number} onChange={e => set('job_number', e.target.value)} placeholder="e.g. TSG-12345" className="h-11 text-base" />
           </div>
 
+          {/* Category */}
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Category</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {[{ value: 'pump', label: '⛽ Pump' }, { value: 'ev', label: '⚡ EV Charger' }].map(c => (
+                <button
+                  key={c.value}
+                  onClick={() => setForm(prev => ({ ...prev, category: c.value, equipment_name: '' }))}
+                  className={cn('rounded-xl border-2 p-3 text-left transition-all', form.category === c.value ? 'border-primary bg-primary/10' : 'border-border bg-card')}
+                >
+                  <p className="font-semibold text-sm">{c.label}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Equipment make */}
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Equipment Make</Label>
+            <Select value={form.equipment_name || ''} onValueChange={v => set('equipment_name', v)}>
+              <SelectTrigger className="h-11"><SelectValue placeholder="Select make..." /></SelectTrigger>
+              <SelectContent>
+                {(form.category === 'ev' ? EV_CHARGER_MAKES : PUMP_MAKES).map(make => (
+                  <SelectItem key={make} value={make}>{make}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Inventory / equipment type */}
+          <div className="space-y-1.5">
+            <Label htmlFor="inventory_type" className="text-xs text-muted-foreground">Inventory / Equipment Type (from work app)</Label>
+            <Input id="inventory_type" value={form.inventory_type || ''} onChange={e => set('inventory_type', e.target.value)} placeholder="e.g. SK700 VR2 MULTILINE" className="h-11" />
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="location_name" className="text-xs text-muted-foreground">Site Name</Label>
@@ -222,21 +268,7 @@ export default function JobForm() {
             </div>
           </div>
 
-          {/* Equipment selector */}
-          {equipmentList.length > 0 && (
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Equipment</Label>
-              <Select value={form.equipment_id || '__none__'} onValueChange={handleEquipmentSelect}>
-                <SelectTrigger className="h-11"><SelectValue placeholder="Select equipment..." /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__">— None —</SelectItem>
-                  {equipmentList.map(eq => (
-                    <SelectItem key={eq.id} value={eq.id}>{eq.name}{eq.asset_number ? ` (${eq.asset_number})` : ''}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+
         </section>
 
         {/* Status — big tap targets */}

@@ -17,6 +17,15 @@
       "default": "reactive",
       "description": "Type of job"
     },
+    "category": {
+      "type": "string",
+      "enum": [
+        "pump",
+        "ev"
+      ],
+      "default": "pump",
+      "description": "Equipment category: fuel pump or EV charger"
+    },
     "location_name": {
       "type": "string",
       "description": "Actual job location name"
@@ -31,7 +40,11 @@
     },
     "equipment_name": {
       "type": "string",
-      "description": "Equipment name (denormalised for quick display)"
+      "description": "Equipment make/name"
+    },
+    "inventory_type": {
+      "type": "string",
+      "description": "Inventory / equipment type from work app"
     },
     "pump_number": {
       "type": "string",
@@ -94,7 +107,7 @@
     },
     "personal_notes": {
       "type": "string",
-      "description": "Private personal notes: challenges, access issues, extra hours context \u2014 for management discussions"
+      "description": "Private personal notes"
     },
     "colleague_name": {
       "type": "string",
@@ -136,7 +149,7 @@
     },
     "history_entries": {
       "type": "array",
-      "description": "Log of previous visits / comments for this job/site",
+      "description": "Log of previous visits",
       "items": {
         "type": "object",
         "properties": {
