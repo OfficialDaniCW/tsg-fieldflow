@@ -3,6 +3,7 @@ import { LayoutDashboard, Briefcase, MessageCircle, BarChart2, ChevronUp, LogOut
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import OfflineBanner from '@/components/layout/OfflineBanner';
 
 // Bottom nav: 4 items — Home, Jobs, Insights (grouped), WhatsApp
 const insightItems = [
@@ -93,6 +94,7 @@ export default function AppLayout() {
         </aside>
 
         <main className="flex-1 overflow-auto">
+          <OfflineBanner />
           <Outlet />
         </main>
       </div>
@@ -118,6 +120,7 @@ export default function AppLayout() {
         </div>
 
         <main className="flex-1 overflow-auto pb-20">
+          <OfflineBanner />
           <Outlet />
         </main>
 

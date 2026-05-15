@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Save, Trash2, Wrench, Clock, CheckCircle2, AlertTriangle, Package, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Wrench, Clock, CheckCircle2, AlertTriangle, Package, ShoppingCart, WifiOff } from 'lucide-react';
+import { savePendingJob } from '@/lib/offlineDB';
 import ImageUploader from '@/components/jobs/ImageUploader';
 import AIExtractButton from '@/components/jobs/AIExtractButton';
 import PartsManager from '@/components/jobs/PartsManager';
@@ -96,12 +97,23 @@ export default function JobForm() {
   };
 
   const saveMutation = useMutation({
-    mutationFn: () => isNew
-      ? base44.entities.Job.create(form)
-      : base44.entities.Job.update(id, form),
+    mutationFn: async () => {
+      if (!navigator.onLine && isNew) {
+        // Save to IndexedDB for later sync
+        const offline_id = await savePendingJob(form);
+        return { offline: true, offline_id };
+      }
+      return isNew
+        ? base44.entities.Job.create(form)
+        : base44.entities.Job.update(id, form);
+    },
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      navigate(isNew ? `/jobs/${result.id}` : `/jobs/${id}`);
+      if (result?.offline) {
+        navigate('/jobs');
+      } else {
+        navigate(isNew ? `/jobs/${result.id}` : `/jobs/${id}`);
+      }
     },
   });
 
@@ -126,8 +138,8 @@ export default function JobForm() {
           onClick={() => saveMutation.mutate()}
           disabled={!form.job_number || saveMutation.isPending}
         >
-          <Save className="w-4 h-4" />
-          {saveMutation.isPending ? 'Saving...' : 'Save'}
+          {!navigator.onLine && isNew ? <WifiOff className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+          {saveMutation.isPending ? 'Saving...' : (!navigator.onLine && isNew ? 'Save Offline' : 'Save')}
         </Button>
       </div>
 
