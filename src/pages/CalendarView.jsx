@@ -71,7 +71,7 @@ export default function CalendarView() {
     : [];
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col bg-background max-w-2xl mx-auto">
       {/* Header */}
       <div className="px-4 pt-4 pb-2 flex items-center justify-between">
         <div>
@@ -110,7 +110,7 @@ export default function CalendarView() {
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 flex-1 px-2 gap-0.5 pb-2 overflow-hidden">
+      <div className="grid grid-cols-7 px-2 gap-0.5 pb-4">
         {calDays.map(day => {
           const key = format(day, 'yyyy-MM-dd');
           const dayJobs = jobsByDate[key] || [];
@@ -126,7 +126,7 @@ export default function CalendarView() {
               onDrop={e => handleDrop(e, day)}
               onDragOver={handleDragOver}
               className={cn(
-                'flex flex-col items-center justify-start pt-1.5 rounded-xl cursor-pointer transition-all min-h-0',
+                'flex flex-col items-center justify-start pt-1.5 pb-2 rounded-xl cursor-pointer transition-all',
                 selected ? 'bg-primary/10 ring-2 ring-primary' : 'hover:bg-secondary',
                 !isCurrentMonth && 'opacity-30',
               )}
