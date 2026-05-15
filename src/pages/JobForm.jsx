@@ -15,6 +15,7 @@ import AIExtractButton from '@/components/jobs/AIExtractButton';
 import PartsManager from '@/components/jobs/PartsManager';
 import HistoryEntryManager from '@/components/jobs/HistoryEntryManager';
 import TravelTracker from '@/components/jobs/TravelTracker';
+import TravelHome from '@/components/jobs/TravelHome';
 import { cn } from '@/lib/utils';
 
 const defaultJob = {
@@ -333,6 +334,24 @@ export default function JobForm() {
                   ? prev.personal_notes + '\n' + note
                   : note,
               }));
+            }}
+          />
+        </section>
+
+        {/* Travel Home (last job overtime tracker) */}
+        <section className="space-y-3">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block">Travel Home</Label>
+          <TravelHome
+            jobId={id}
+            onOvertimeConfirmed={({ arrivedTime, isOvertime, overtimeQuarters, overtimeMins }) => {
+              if (isOvertime) {
+                const note = `Travel home overtime: arrived ${arrivedTime}, ${overtimeQuarters} quarter${overtimeQuarters !== 1 ? 's' : ''} = ${overtimeMins} mins past 17:30.`;
+                setForm(prev => ({
+                  ...prev,
+                  is_overtime: true,
+                  personal_notes: prev.personal_notes ? prev.personal_notes + '\n' + note : note,
+                }));
+              }
             }}
           />
         </section>
