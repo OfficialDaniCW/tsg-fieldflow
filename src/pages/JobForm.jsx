@@ -19,7 +19,7 @@ const defaultJob = {
   job_number: '', location_name: '', location_number: '', job_date: '',
   start_time: '', finish_time: '', is_overtime: false, status: 'incomplete',
   job_type: 'reactive', pump_number: '', equipment_id: '', equipment_name: '',
-  completion_notes: '', colleague_name: '', image_urls: [], parts: [],
+  completion_notes: '', personal_notes: '', colleague_name: '', image_urls: [], parts: [],
   history_entries: [], ai_extracted: false, non_conformance_reason: ''
 };
 
@@ -275,6 +275,19 @@ export default function JobForm() {
             onChange={e => set('completion_notes', e.target.value)}
             placeholder="Describe what was done, findings, outcome..."
             className="resize-none h-28 text-base"
+          />
+        </section>
+
+        {/* Personal notes */}
+        <section className="space-y-1.5">
+          <Label htmlFor="personal_notes" className="text-xs font-semibold text-amber-700 uppercase tracking-wide">📝 My Notes</Label>
+          <p className="text-xs text-muted-foreground">Private log for challenges, access issues, extra hours — for your reference in management discussions.</p>
+          <Textarea
+            id="personal_notes"
+            value={form.personal_notes}
+            onChange={e => set('personal_notes', e.target.value)}
+            placeholder="e.g. Site access delayed 45 mins waiting for manager. Had to source alternative parts on the day..."
+            className="resize-none h-28 text-base border-amber-200 focus:border-amber-400"
           />
         </section>
 

@@ -148,6 +148,14 @@ export default function JobDetail() {
           </div>
         )}
 
+        {/* Personal notes */}
+        {job.personal_notes && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <p className="text-xs text-amber-700 mb-2 font-semibold uppercase tracking-wide">📝 My Notes</p>
+            <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{job.personal_notes}</p>
+          </div>
+        )}
+
         {/* Parts */}
         {job.parts?.length > 0 && (
           <div className="space-y-2">

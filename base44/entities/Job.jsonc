@@ -15,7 +15,7 @@
         "other"
       ],
       "default": "reactive",
-      "description": "Type of job: Reactive (breakdown), PPM (planned maintenance audit), VR2 (vapour recovery)"
+      "description": "Type of job"
     },
     "location_name": {
       "type": "string",
@@ -80,6 +80,10 @@
     "completion_notes": {
       "type": "string",
       "description": "Notes about job completion / what was done"
+    },
+    "personal_notes": {
+      "type": "string",
+      "description": "Private personal notes: challenges, access issues, extra hours context \u2014 for management discussions"
     },
     "colleague_name": {
       "type": "string",
