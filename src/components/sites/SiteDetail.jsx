@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Briefcase, Package, StickyNote, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MapPin, Briefcase, Package, StickyNote, ChevronRight, Fuel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format, parseISO } from 'date-fns';
 import StatusBadge from '@/components/jobs/StatusBadge';
+import SiteEquipment from '@/components/sites/SiteEquipment';
 import { cn } from '@/lib/utils';
 
 export default function SiteDetail({ site, onBack }) {
+  // siteRecordId is available if the site came from the Site entity directly
+  const siteRecordId = site.id && site.id !== (site.location_number || site.name) ? site.id : null;
   const jobs = site.jobs;
 
   // Total parts used across all jobs
@@ -55,6 +58,14 @@ export default function SiteDetail({ site, onBack }) {
       </div>
 
       <div className="px-4 py-5 space-y-6">
+
+        {/* Equipment inventory */}
+        <div className="space-y-3">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+            <Fuel className="w-3.5 h-3.5" /> Site Equipment
+          </p>
+          <SiteEquipment site={site} siteRecordId={siteRecordId} />
+        </div>
 
         {/* Summary chips */}
         <div className="flex gap-3 flex-wrap">

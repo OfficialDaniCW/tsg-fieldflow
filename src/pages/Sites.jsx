@@ -37,13 +37,14 @@ export default function Sites() {
       map[key].jobs.push(job);
     });
 
-    // Merge with Site entity records for extra info (address, notes etc.)
+    // Merge with Site entity records for extra info (address, notes, equipment etc.)
     siteRecords.forEach(rec => {
       const key = rec.location_number || rec.name;
       if (map[key]) {
-        map[key] = { ...map[key], ...rec, jobs: map[key].jobs };
+        // Preserve the real entity id so equipment can be saved back
+        map[key] = { ...map[key], ...rec, id: rec.id, jobs: map[key].jobs };
       } else {
-        map[key] = { ...rec, id: key, jobs: [] };
+        map[key] = { ...rec, jobs: [] };
       }
     });
 

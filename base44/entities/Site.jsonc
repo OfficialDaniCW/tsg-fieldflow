@@ -41,6 +41,141 @@
     "notes": {
       "type": "string",
       "description": "General site notes"
+    },
+    "pumps": {
+      "type": "array",
+      "description": "Fuel pumps installed at this site",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pump_number": {
+            "type": "string",
+            "description": "Pump number e.g. 1, 3 & 4"
+          },
+          "make": {
+            "type": "string",
+            "description": "Manufacturer e.g. Gilbarco, Wayne"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model name e.g. SK700"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "mono",
+              "dual",
+              "triple",
+              "adblue",
+              "lpg",
+              "other"
+            ],
+            "description": "Pump configuration type"
+          },
+          "asset_number": {
+            "type": "string"
+          },
+          "serial_number": {
+            "type": "string"
+          },
+          "install_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tanks": {
+      "type": "array",
+      "description": "Storage tanks at this site",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tank_number": {
+            "type": "string",
+            "description": "Tank reference e.g. Tank 1"
+          },
+          "product": {
+            "type": "string",
+            "enum": [
+              "diesel",
+              "unleaded",
+              "super_unleaded",
+              "adblue",
+              "lpg",
+              "other"
+            ],
+            "description": "Fuel product stored"
+          },
+          "capacity_litres": {
+            "type": "number"
+          },
+          "asset_number": {
+            "type": "string"
+          },
+          "serial_number": {
+            "type": "string"
+          },
+          "gauge_make": {
+            "type": "string",
+            "description": "Tank gauge manufacturer"
+          },
+          "gauge_model": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ev_chargers": {
+      "type": "array",
+      "description": "EV chargers installed at this site",
+      "items": {
+        "type": "object",
+        "properties": {
+          "unit_number": {
+            "type": "string"
+          },
+          "make": {
+            "type": "string",
+            "description": "e.g. Kempower, Alpitronic"
+          },
+          "model": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "dc_fast",
+              "ac_slow",
+              "rapid",
+              "ultra_rapid"
+            ],
+            "description": "Charger speed category"
+          },
+          "power_kw": {
+            "type": "number"
+          },
+          "asset_number": {
+            "type": "string"
+          },
+          "serial_number": {
+            "type": "string"
+          },
+          "install_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "required": [
