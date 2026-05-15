@@ -10,6 +10,7 @@ import StatusBadge from '@/components/jobs/StatusBadge';
 import { useJobs } from '@/hooks/useJobs';
 import { useAuth } from '@/lib/AuthContext';
 import TravelSummary from '@/components/dashboard/TravelSummary';
+import TodayRoutePlanner from '@/components/dashboard/TodayRoutePlanner';
 
 export default function Dashboard() {
   const { data: allJobs = [] } = useJobs();
@@ -42,6 +43,9 @@ export default function Dashboard() {
 
       {/* Travel Summary */}
       <TravelSummary />
+
+      {/* Today's Route Planner */}
+      <TodayRoutePlanner jobs={allJobs} />
 
       {/* Stats — all jobs */}
       <div>
