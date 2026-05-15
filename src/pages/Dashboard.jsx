@@ -22,11 +22,11 @@ export default function Dashboard() {
   const thisMonthJobs = allJobs.filter(j => j.job_date?.startsWith(thisMonthStr));
 
   const incomplete = allJobs.filter(j => j.status === 'incomplete').slice(0, 5);
-  const partsIssues = allJobs.filter(j => ['parts_required', 'non_conformance', 'wrong_parts'].includes(j.status)).slice(0, 5);
+  const partsIssues = allJobs.filter(j => ['parts_required', 'non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied'].includes(j.status)).slice(0, 5);
   const recentJobs = allJobs.slice(0, 5);
 
   return (
-    <div className="p-5 md:p-8 max-w-5xl mx-auto space-y-8">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-5 md:space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -34,7 +34,7 @@ export default function Dashboard() {
           <p className="text-sm text-muted-foreground mt-0.5">{format(now, 'EEEE, d MMMM yyyy')}</p>
         </div>
         <Link to="/jobs/new">
-          <Button className="gap-2">
+          <Button size="sm" className="gap-1.5 h-9">
             <Plus className="w-4 h-4" />
             New Job
           </Button>

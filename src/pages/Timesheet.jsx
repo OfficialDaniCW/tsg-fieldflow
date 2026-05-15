@@ -79,7 +79,8 @@ export default function Timesheet() {
     const dateLabel = isValid(parseISO(selectedDate))
       ? format(parseISO(selectedDate), 'EEEE, d MMMM yyyy')
       : selectedDate;
-    const engineerName = 'TSG Field Engineer';
+    const settings = (() => { try { return JSON.parse(localStorage.getItem('tsg_user_settings') || '{}'); } catch { return {}; } })();
+    const engineerName = settings.report_name || 'TSG Field Engineer';
 
     // Header
     doc.setFillColor(192, 57, 43);

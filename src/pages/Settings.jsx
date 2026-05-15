@@ -152,17 +152,7 @@ export default function Settings() {
         {saved ? 'Saved!' : 'Save Settings'}
       </Button>
 
-      {/* Outstanding / premium notes */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-        <p className="text-xs font-bold text-amber-800">🔮 Coming Soon / Outstanding</p>
-        <ul className="text-xs text-amber-700 space-y-1 list-disc list-inside">
-          <li>Map view with job pins (requires Google Maps API key)</li>
-          <li>Route optimisation (requires traffic data API)</li>
-          <li>WhatsApp auto-overtime detection from "arrived home" time</li>
-          <li>Push notifications for morning/evening briefings</li>
-          <li>Auto-sync home postcode to WhatsApp agent context</li>
-        </ul>
-      </div>
+
     </div>
   );
 }
