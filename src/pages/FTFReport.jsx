@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import StatusBadge from '@/components/jobs/StatusBadge';
 import BandingDashboard from '@/components/dashboard/BandingDashboard';
+import GradeTracker from '@/components/ftf/GradeTracker';
+import { calcKPIs } from '@/lib/grading';
 
 const NC_REASON_LABELS = {
   wrong_parts_ordered: 'Wrong Parts Ordered',
@@ -30,6 +32,7 @@ export default function FTFReport() {
   const nonConformance = monthJobs.filter(j => ['non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied', 'previous_diagnosis_issue'].includes(j.status));
   const total = monthJobs.length;
   const ftfRate = total > 0 ? Math.round((completed.length / total) * 100) : null;
+  const kpis = calcKPIs(monthJobs);
 
   // Group non-conformance by reason
   const reasonCounts = nonConformance.reduce((acc, job) => {
@@ -89,6 +92,9 @@ export default function FTFReport() {
           {ftfRate === null ? 'No jobs recorded this month.' : ftfRate >= 80 ? 'Excellent first time fix rate!' : ftfRate >= 60 ? 'Aim for above 80% FTF rate.' : 'Low FTF rate — review non-conformance reasons below.'}
         </p>
       </div>
+
+      {/* Grade Tracker */}
+      <GradeTracker kpis={kpis} />
 
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-3">
