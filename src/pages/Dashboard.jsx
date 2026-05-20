@@ -11,6 +11,8 @@ import { useJobs } from '@/hooks/useJobs';
 import { useAuth } from '@/lib/AuthContext';
 import TravelSummary from '@/components/dashboard/TravelSummary';
 import TodayRoutePlanner from '@/components/dashboard/TodayRoutePlanner';
+import TravelTracker from '@/components/jobs/TravelTracker';
+import TravelHome from '@/components/jobs/TravelHome';
 
 export default function Dashboard() {
   const { data: allJobs = [] } = useJobs();
@@ -43,6 +45,12 @@ export default function Dashboard() {
 
       {/* Travel Summary */}
       <TravelSummary />
+
+      {/* Travel Tracker & Travel Home */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <TravelTracker />
+        <TravelHome />
+      </div>
 
       {/* Today's Route Planner */}
       <TodayRoutePlanner jobs={allJobs} />
