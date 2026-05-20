@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Plus, AlertTriangle, Clock } from 'lucide-react';
+import { Plus, AlertTriangle, Clock, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatsRow from '@/components/dashboard/StatsRow';
 import MonthlyChart from '@/components/dashboard/MonthlyChart';
@@ -23,8 +23,11 @@ export default function Dashboard() {
   const thisMonthStr = format(now, 'yyyy-MM');
   const thisMonthJobs = allJobs.filter(j => j.job_date?.startsWith(thisMonthStr));
 
-  const incomplete = allJobs.filter(j => j.status === 'incomplete').slice(0, 5);
-  const partsIssues = allJobs.filter(j => ['needs_parts', 'parts_required', 'non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied'].includes(j.status)).slice(0, 5);
+  // Any job that isn't resolved
+  const COMPLETED_STATUSES = ['completed_first_visit', 'completed_return_visit', 'completed'];
+  const incomplete = allJobs.filter(j => !COMPLETED_STATUSES.includes(j.status) && !['needs_parts', 'parts_required', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'non_conformance'].includes(j.status)).slice(0, 5);
+  const partsIssues = allJobs.filter(j => ['needs_parts', 'parts_required', 'non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'parts_ordered'].includes(j.status)).slice(0, 5);
+  const overtimeJobs = allJobs.filter(j => j.is_overtime).slice(0, 10);
   const recentJobs = allJobs.slice(0, 5);
 
   return (
@@ -112,6 +115,31 @@ export default function Dashboard() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Overtime jobs */}
+      {overtimeJobs.length > 0 && (
+        <div>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">Overtime Jobs</p>
+          <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Moon className="w-4 h-4 text-purple-600" />
+              <span className="text-sm font-semibold text-purple-800">{overtimeJobs.length} job{overtimeJobs.length !== 1 ? 's' : ''} with overtime</span>
+            </div>
+            <div className="space-y-2">
+              {overtimeJobs.map(job => (
+                <Link key={job.id} to={`/jobs/${job.id}`} className="flex items-center justify-between py-1.5 hover:opacity-70 transition-opacity">
+                  <span className="text-sm font-medium text-foreground">#{job.job_number}</span>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    {job.location_name && <span>{job.location_name}</span>}
+                    {job.job_date && <span>{format(new Date(job.job_date), 'dd MMM')}</span>}
+                    {job.finish_time && <span className="font-mono text-purple-700">→ {job.finish_time}</span>}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Home, Navigation, Clock, AlertTriangle } from 'lucide-react';
+import { Home, Navigation, Clock, AlertTriangle, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -34,12 +34,27 @@ function formatOT(quarters) {
 }
 
 const STORAGE_KEY = 'tsg_travel_home';
+const HISTORY_KEY = 'tsg_travel_home_history';
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveToHistory(entry) {
+  const history = loadHistory();
+  // Keep last 30 entries
+  const updated = [entry, ...history].slice(0, 30);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+}
 
 export default function TravelHome({ jobId, onOvertimeConfirmed }) {
   const [state, setState] = useState(() => {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
   });
+  const [history] = useState(loadHistory);
+  const [showHistory, setShowHistory] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const isActive = !!state.startTime;
@@ -57,12 +72,15 @@ export default function TravelHome({ jobId, onOvertimeConfirmed }) {
   function arrivedHome() {
     setLoading(true);
     const arrivedTime = nowTimeStr();
+    const date = new Date().toISOString().slice(0, 10);
     const arrivedMins = parseTime(arrivedTime);
     const quarters = overtimeQuarters(arrivedMins);
     const isOT = quarters > 0;
-    const updated = { ...state, arrivedTime, isOvertime: isOT, overtimeQuarters: quarters };
+    const updated = { ...state, arrivedTime, isOvertime: isOT, overtimeQuarters: quarters, date };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     setState(updated);
+    // Save to history
+    saveToHistory({ date, startTime: state.startTime, arrivedTime, isOvertime: isOT, overtimeQuarters: quarters });
     setLoading(false);
 
     if (onOvertimeConfirmed) {
@@ -115,7 +133,7 @@ export default function TravelHome({ jobId, onOvertimeConfirmed }) {
           </div>
         )}
         <button onClick={reset} className="text-xs text-muted-foreground hover:text-foreground underline mt-3 block">
-          Reset
+          Start new day
         </button>
       </div>
     );
@@ -151,7 +169,7 @@ export default function TravelHome({ jobId, onOvertimeConfirmed }) {
     );
   }
 
-  // Idle
+  // Idle — show start button + optional history
   return (
     <div className="rounded-xl border-2 border-border bg-card p-4">
       <div className="flex items-center gap-2 mb-3">
@@ -160,7 +178,7 @@ export default function TravelHome({ jobId, onOvertimeConfirmed }) {
         <span className="ml-auto text-xs text-muted-foreground">OT after 17:30</span>
       </div>
       <p className="text-xs text-muted-foreground mb-3">
-        Press when leaving your last job. When you arrive home, tap "Arrived Home" — the app will auto-calculate any overtime in 15-min quarters.
+        Press when leaving your last job. Tap "Arrived Home" to log your arrival and auto-calculate overtime.
       </p>
       <Button
         type="button"
@@ -172,6 +190,34 @@ export default function TravelHome({ jobId, onOvertimeConfirmed }) {
         <Navigation className="w-4 h-4" />
         {loading ? 'Starting...' : 'Start Travel Home'}
       </Button>
+
+      {history.length > 0 && (
+        <div className="mt-3">
+          <button
+            onClick={() => setShowHistory(h => !h)}
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <History className="w-3 h-3" />
+            {showHistory ? 'Hide' : 'Show'} history ({history.length})
+          </button>
+          {showHistory && (
+            <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto">
+              {history.map((h, i) => (
+                <div key={i} className={cn(
+                  'flex items-center justify-between text-xs rounded-lg px-2 py-1.5',
+                  h.isOvertime ? 'bg-purple-50 text-purple-800' : 'bg-green-50 text-green-800'
+                )}>
+                  <span className="font-medium">{h.date}</span>
+                  <span className="font-mono">{h.startTime} → {h.arrivedTime}</span>
+                  <span className="font-semibold">
+                    {h.isOvertime ? `+${formatOT(h.overtimeQuarters)} OT` : 'No OT'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
