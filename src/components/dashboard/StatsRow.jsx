@@ -2,8 +2,7 @@ import { CheckCircle2, XCircle, Package, Clock, Briefcase } from 'lucide-react';
 
 export default function StatsRow({ jobs, allJobsCount }) {
   const total = jobs.length;
-  // completed = first visit + return visit + legacy 'completed'
-  const completed = jobs.filter(j => ['completed_first_visit', 'completed_return_visit', 'completed'].includes(j.status)).length;
+  const completed = jobs.filter(j => ['completed_first_visit', 'completed_return_visit'].includes(j.status)).length;
   // incomplete = literally couldn't attend / didn't make it
   const incomplete = jobs.filter(j => j.status === 'incomplete').length;
   // parts issues

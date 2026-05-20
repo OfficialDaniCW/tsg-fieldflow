@@ -19,10 +19,7 @@ export function calcKPIs(jobs) {
   if (total === 0) return { ftf: null, jpd: null, po: null };
 
   // FTF: completed_first_visit only (completed_return_visit is NOT first-time fix)
-  // legacy 'completed' also counted for backward compatibility
-  const ftfCount = jobs.filter(j =>
-    j.status === 'completed_first_visit' || j.status === 'completed'
-  ).length;
+  const ftfCount = jobs.filter(j => j.status === 'completed_first_visit').length;
   const ftf = Math.round((ftfCount / total) * 100 * 10) / 10;
 
   // JPD: total jobs ÷ distinct job_date days
