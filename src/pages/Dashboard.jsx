@@ -23,8 +23,10 @@ export default function Dashboard() {
   const thisMonthStr = format(now, 'yyyy-MM');
   const thisMonthJobs = allJobs.filter(j => j.job_date?.startsWith(thisMonthStr));
 
-  const incomplete = allJobs.filter(j => j.status === 'incomplete').slice(0, 5);
-  const partsIssues = allJobs.filter(j => ['needs_parts', 'parts_required', 'non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'parts_ordered'].includes(j.status)).slice(0, 5);
+  const INCOMPLETE_STATUSES = ['incomplete', 'unable_to_complete', 'no_access', 'tooling_equipment_issue', 'previous_diagnosis_issue', 'awaiting_others'];
+  const PARTS_STATUSES = ['needs_parts', 'parts_required', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'non_conformance'];
+  const incomplete = allJobs.filter(j => INCOMPLETE_STATUSES.includes(j.status)).slice(0, 5);
+  const partsIssues = allJobs.filter(j => PARTS_STATUSES.includes(j.status)).slice(0, 5);
   const overtimeJobs = allJobs.filter(j => j.is_overtime).slice(0, 10);
   const recentJobs = allJobs.slice(0, 5);
 

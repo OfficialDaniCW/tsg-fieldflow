@@ -2,10 +2,10 @@ import { CheckCircle2, XCircle, Package, Clock, Briefcase } from 'lucide-react';
 
 export default function StatsRow({ jobs, allJobsCount }) {
   const total = jobs.length;
-  const completed = jobs.filter(j => ['completed_first_visit', 'completed_return_visit'].includes(j.status)).length;
-  // incomplete = literally couldn't attend / didn't make it
-  const incomplete = jobs.filter(j => j.status === 'incomplete').length;
-  // parts issues
+  const completed = jobs.filter(j => ['completed_first_visit', 'completed_return_visit', 'completed'].includes(j.status)).length;
+  // incomplete = couldn't finish: no access, unable to complete, tooling, etc.
+  const incomplete = jobs.filter(j => ['incomplete', 'unable_to_complete', 'no_access', 'tooling_equipment_issue', 'previous_diagnosis_issue', 'awaiting_others'].includes(j.status)).length;
+  // parts issues = blocked by parts
   const partsIssues = jobs.filter(j => ['needs_parts', 'parts_required', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'non_conformance'].includes(j.status)).length;
   const overtime = jobs.filter(j => j.is_overtime).length;
 
