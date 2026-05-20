@@ -87,9 +87,14 @@ export default function JobForm() {
   const { data: existing } = useQuery({
     queryKey: ['job', id],
     queryFn: () => base44.entities.Job.filter({ id }),
-    enabled: !isNew,
+    enabled: !isNew && !!id,
     select: data => data[0],
   });
+
+  // Reset form to blank when creating a new job
+  useEffect(() => {
+    if (isNew) setForm(defaultJob);
+  }, [isNew]);
 
   const { data: equipmentList = [] } = useQuery({
     queryKey: ['equipment'],
