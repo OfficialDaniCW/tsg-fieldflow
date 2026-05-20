@@ -4,8 +4,8 @@ export default function StatsRow({ jobs, allJobsCount }) {
   const total = jobs.length;
   // completed = first visit + return visit + legacy 'completed'
   const completed = jobs.filter(j => ['completed_first_visit', 'completed_return_visit', 'completed'].includes(j.status)).length;
-  // incomplete = any non-resolved status
-  const incomplete = jobs.filter(j => !['completed_first_visit', 'completed_return_visit', 'completed'].includes(j.status)).length;
+  // incomplete = literally couldn't attend / didn't make it
+  const incomplete = jobs.filter(j => j.status === 'incomplete').length;
   // parts issues
   const partsIssues = jobs.filter(j => ['needs_parts', 'parts_required', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'non_conformance'].includes(j.status)).length;
   const overtime = jobs.filter(j => j.is_overtime).length;

@@ -25,7 +25,7 @@ export default function Dashboard() {
 
   // Any job that isn't resolved
   const COMPLETED_STATUSES = ['completed_first_visit', 'completed_return_visit', 'completed'];
-  const incomplete = allJobs.filter(j => !COMPLETED_STATUSES.includes(j.status) && !['needs_parts', 'parts_required', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'non_conformance'].includes(j.status)).slice(0, 5);
+  const incomplete = allJobs.filter(j => j.status === 'incomplete').slice(0, 5);
   const partsIssues = allJobs.filter(j => ['needs_parts', 'parts_required', 'non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock', 'parts_ordered'].includes(j.status)).slice(0, 5);
   const overtimeJobs = allJobs.filter(j => j.is_overtime).slice(0, 10);
   const recentJobs = allJobs.slice(0, 5);
