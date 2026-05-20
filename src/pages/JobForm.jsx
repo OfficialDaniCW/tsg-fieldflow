@@ -17,6 +17,8 @@ import HistoryEntryManager from '@/components/jobs/HistoryEntryManager';
 import TravelTracker from '@/components/jobs/TravelTracker';
 import TravelHome from '@/components/jobs/TravelHome';
 import SiteAssetPicker from '@/components/jobs/SiteAssetPicker';
+import TemplatePicker from '@/components/jobs/TemplatePicker';
+import SaveAsTemplateButton from '@/components/jobs/SaveAsTemplateButton';
 import { cn } from '@/lib/utils';
 
 const defaultJob = {
@@ -187,6 +189,13 @@ export default function JobForm() {
       </div>
 
       <div className="px-4 py-5 space-y-7">
+
+        {/* Template picker */}
+        {isNew && (
+          <section>
+            <TemplatePicker onApply={fields => setForm(prev => ({ ...prev, ...fields }))} />
+          </section>
+        )}
 
         {/* Job Type selector — big touch targets */}
         <section>
@@ -441,6 +450,11 @@ export default function JobForm() {
             </p>
           )}
         </section>
+
+        {/* Save as template */}
+        <div className="flex justify-center pt-2">
+          <SaveAsTemplateButton form={form} />
+        </div>
 
         {/* Delete */}
         {!isNew && (

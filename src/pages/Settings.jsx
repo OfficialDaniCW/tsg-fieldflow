@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import JobTemplateManager from '@/components/settings/JobTemplateManager';
 
 const SETTINGS_KEY = 'tsg_user_settings';
 
@@ -146,6 +147,8 @@ export default function Settings() {
           />
         </div>
       </section>
+
+      <JobTemplateManager />
 
       <Button onClick={handleSave} className="w-full gap-2 h-12 text-base font-semibold">
         {saved ? <CheckCircle2 className="w-5 h-5" /> : <Save className="w-5 h-5" />}

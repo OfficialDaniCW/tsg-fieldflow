@@ -1,0 +1,52 @@
+{
+  "name": "JobTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name (e.g. 'PPM Tesco Hythe')"
+    },
+    "job_type": {
+      "type": "string",
+      "enum": [
+        "reactive",
+        "ppm",
+        "vr2",
+        "other"
+      ],
+      "default": "reactive"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "pump",
+        "ev"
+      ],
+      "default": "pump"
+    },
+    "location_name": {
+      "type": "string"
+    },
+    "location_number": {
+      "type": "string"
+    },
+    "equipment_name": {
+      "type": "string"
+    },
+    "inventory_type": {
+      "type": "string"
+    },
+    "pump_number": {
+      "type": "string"
+    },
+    "colleague_name": {
+      "type": "string"
+    },
+    "completion_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
