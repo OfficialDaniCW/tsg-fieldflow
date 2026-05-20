@@ -97,9 +97,7 @@
         "previous_diagnosis_issue",
         "awaiting_others",
         "unable_to_complete",
-        "non_conformance",
-        "parts_required",
-        "completed"
+        "non_conformance"
       ],
       "default": "incomplete",
       "description": "Current job status"

@@ -28,7 +28,8 @@ export default function FTFReport() {
   const monthStr = format(currentMonth, 'yyyy-MM');
   const monthJobs = allJobs.filter(job => job.job_date?.startsWith(monthStr));
 
-  const completed = monthJobs.filter(j => ['completed', 'completed_first_visit', 'completed_return_visit'].includes(j.status));
+  // completed_return_visit is not FTF; legacy 'completed' is treated as FTF
+  const completed = monthJobs.filter(j => ['completed', 'completed_first_visit'].includes(j.status));
   const nonConformance = monthJobs.filter(j => ['non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied', 'previous_diagnosis_issue'].includes(j.status));
   const total = monthJobs.length;
   const ftfRate = total > 0 ? Math.round((completed.length / total) * 100) : null;

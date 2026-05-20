@@ -18,7 +18,8 @@ export function calcKPIs(jobs) {
   const total = jobs.length;
   if (total === 0) return { ftf: null, jpd: null, po: null };
 
-  // FTF: completed_first_visit + completed ÷ total
+  // FTF: completed_first_visit only (completed_return_visit is NOT first-time fix)
+  // legacy 'completed' also counted for backward compatibility
   const ftfCount = jobs.filter(j =>
     j.status === 'completed_first_visit' || j.status === 'completed'
   ).length;
@@ -28,9 +29,9 @@ export function calcKPIs(jobs) {
   const days = new Set(jobs.map(j => j.job_date).filter(Boolean)).size;
   const jpd = days > 0 ? Math.round((total / days) * 10) / 10 : null;
 
-  // PO: parts-ordered statuses ÷ total
+  // PO: parts-ordered statuses ÷ total (parts_required = legacy alias for needs_parts)
   const poCount = jobs.filter(j =>
-    ['needs_parts', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock'].includes(j.status)
+    ['needs_parts', 'parts_required', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock'].includes(j.status)
   ).length;
   const po = Math.round((poCount / total) * 100 * 10) / 10;
 

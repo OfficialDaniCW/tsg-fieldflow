@@ -24,7 +24,7 @@ export default function Dashboard() {
   const thisMonthJobs = allJobs.filter(j => j.job_date?.startsWith(thisMonthStr));
 
   const incomplete = allJobs.filter(j => j.status === 'incomplete').slice(0, 5);
-  const partsIssues = allJobs.filter(j => ['parts_required', 'non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied'].includes(j.status)).slice(0, 5);
+  const partsIssues = allJobs.filter(j => ['needs_parts', 'parts_required', 'non_conformance', 'wrong_parts_supplied', 'faulty_parts_supplied'].includes(j.status)).slice(0, 5);
   const recentJobs = allJobs.slice(0, 5);
 
   return (

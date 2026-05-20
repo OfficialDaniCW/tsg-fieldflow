@@ -3,10 +3,11 @@ import { Clock, CheckCircle2, AlertTriangle, Package, ShoppingCart, XCircle, Ban
 const STATUS_CONFIG = {
   completed_first_visit: { label: 'Completed (1st Visit)', icon: CheckCircle2, color: 'bg-green-100 text-green-700 border-green-200' },
   completed_return_visit: { label: 'Completed (Return)', icon: CheckCircle2, color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+  // legacy values kept for display of old records
   completed:             { label: 'Completed', icon: CheckCircle2, color: 'bg-green-100 text-green-700 border-green-200' },
+  parts_required:        { label: 'Needs Parts', icon: Package, color: 'bg-amber-100 text-amber-700 border-amber-200' },
   incomplete:            { label: 'Incomplete', icon: Clock, color: 'bg-red-100 text-red-700 border-red-200' },
   needs_parts:           { label: 'Needs Parts', icon: Package, color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  parts_required:        { label: 'Parts Required', icon: Package, color: 'bg-amber-100 text-amber-700 border-amber-200' },
   parts_ordered:         { label: 'Parts Ordered', icon: ShoppingCart, color: 'bg-blue-100 text-blue-700 border-blue-200' },
   wrong_parts_supplied:  { label: 'Wrong Parts', icon: XCircle, color: 'bg-orange-100 text-orange-700 border-orange-200' },
   faulty_parts_supplied: { label: 'Faulty Parts', icon: XCircle, color: 'bg-orange-100 text-orange-700 border-orange-200' },

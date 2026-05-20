@@ -89,6 +89,7 @@ const BREAKDOWN_TILES = [
     key: 'parts_blockers',
     label: 'Parts blockers',
     calc: jobs => {
+      // parts_required is legacy alias for needs_parts
       const n = jobs.filter(j => ['needs_parts', 'parts_required', 'parts_ordered', 'wrong_parts_supplied', 'faulty_parts_supplied', 'missing_stock'].includes(j.status)).length;
       return { count: n, pct: jobs.length ? Math.round((n / jobs.length) * 100) : 0 };
     },
